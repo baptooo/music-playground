@@ -12,10 +12,15 @@
 
 1. Node modules: "npm install"
 2. Bower components: "bower install"
-3. Create "userConfig.json" file to store the basePath of your music library
+3. Create "userConfig.json" file to configure the application
+
+        Available options:
+            1. basePath: store the basePath of your music library & the hostname
+            2. hostname: define the hostname used by grunt-contrib-connect
 
     ```{
-        basePath: 'Disk:/myMusic'
+        "basePath": "Disk:/myMusic"
+        "hostname": "myDomain.com"
     }```
     
 4. Generate the api: "grunt api"
