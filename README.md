@@ -15,13 +15,15 @@
 3. Create "userConfig.json" file to configure the application
 
         Available options:
-            1. basePath: store the basePath of your music library & the hostname
+            1. basePath: store the basePath of your music library
             2. hostname: define the hostname used by grunt-contrib-connect
-
-    ```{
-        "basePath": "Disk:/myMusic"
-        "hostname": "myDomain.com"
-    }```
+        
+        Example:
+        ```js
+        {
+            "basePath": "Disk:/myMusic"
+            "hostname": "myDomain.com"
+        }```
     
 4. Generate the api: "grunt api"
 5. Start the server "grunt server" and you are ready !
