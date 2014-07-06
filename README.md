@@ -23,8 +23,8 @@
     ```js
     {
         "basePath": "Disk:/myMusic"
-        "hostname": "myDomain.com"
-        "port": 80
+        "hostname": "localhost"
+        "port": 9000
     }
     ```
     
