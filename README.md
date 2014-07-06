@@ -19,11 +19,11 @@
             2. hostname: define the hostname used by grunt-contrib-connect
         
         Example:
-        ```js
-        {
-            "basePath": "Disk:/myMusic"
-            "hostname": "myDomain.com"
-        }```
+    ```js
+    {
+        "basePath": "Disk:/myMusic"
+        "hostname": "myDomain.com"
+    }```
     
 4. Generate the api: "grunt api"
 5. Start the server "grunt server" and you are ready !
