@@ -1,0 +1,11 @@
+.actionList {
+  &__item {
+    border-bottom: 1px solid #ccc;
+    padding: 8px 0;
+    line-height: 30px;
+
+    &--album {
+      line-height: initial;
+    }
+  }
+}

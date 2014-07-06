@@ -1,0 +1,83 @@
+.alpha {
+  %alpha-active {
+    opacity: 1;
+  }
+  %alpha-remove {
+    opacity: 0;
+  }
+  @include ngAnimate('alpha', opacity .5s ease-in-out);
+}
+
+.slide-right {
+  &.ng-enter {
+    @include transition(all .3s ease-out);
+    @include transform(translate3d(10px, 10px, 0));
+    opacity: 0;
+
+    &-active {
+      @include transform(translate3d(0, 0, 0));
+      opacity: 1;
+    }
+  }
+
+  &-delayed {
+    &.ng-enter {
+      &-stagger {
+        /* this will have a 100ms delay between each successive leave animation */
+        -webkit-transition-delay: 0.1s;
+        transition-delay: 0.1s;
+
+        /* in case the stagger doesn't work then these two values
+         must be set to 0 to avoid an accidental CSS inheritance */
+        -webkit-transition-duration: 0s;
+        transition-duration: 0s;
+      }
+    }
+  }
+}
+
+.slide-left {
+  &.ng-enter {
+    @include transition(all .3s ease-out);
+    @include transform(translate3d(-15px, 0, 0));
+    opacity: 0;
+
+    &-active {
+      @include transform(translate3d(0,0,0));
+      opacity: 1;
+    }
+  }
+  &.ng-leave {
+    @include transition(all .3s ease-out);
+    @include transform(translate3d(0,0,0));
+    opacity: 1;
+
+    &-active {
+      @include transform(translate3d(-15px, 0, 0));
+      opacity: 0;
+    }
+  }
+}
+
+.push-top {
+  &.ng-enter {
+    @include transition(all .3s ease-in-out);
+    margin-top: -35px;
+    opacity: 0;
+
+    &-active {
+      margin-top: 0;
+      opacity: 1;
+    }
+  }
+  &.ng-leave {
+    @include transition(all .2s ease-in-out);
+    margin-top: 0;
+    opacity: 1;
+
+    &-active {
+      margin-top: -35px;
+      opacity: 0;
+    }
+  }
+}

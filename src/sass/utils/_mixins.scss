@@ -1,0 +1,44 @@
+@mixin transition($rule) {
+  @each $vendor in -webkit -moz -msie -o {
+    #{$vendor}-transition: $rule;
+  }
+  transition: $rule;
+}
+
+@mixin transform($rule) {
+  @each $vendor in -webkit -moz -msie -o {
+    #{$vendor}-transform: $rule;
+  }
+  transform: $rule;
+}
+
+$rules: (
+  'active': 'ng-enter' 'ng-add' 'ng-show',
+  'remove': 'ng-leave' 'ng-remove' 'ng-hide'
+);
+@mixin ngAnimate($name, $transition) {
+  .#{$name} {
+    $i: 0;
+    @each $type, $rulesSet in $rules {
+      $active: if($i == 0, 'active', 'remove');
+      $remove: if($i == 0, 'remove', 'active');
+
+      @each $rule in $rulesSet {
+        &.#{$rule} {
+          @include transition($transition);
+          @extend %#{$name}-#{$active};
+
+          &-active {
+            @extend %#{$name}-#{$remove};
+          }
+
+          &-remove {
+            @extend %#{$name}-#{$active};
+          }
+        }
+      }
+
+      $i: $i + 1;
+    }
+  }
+}

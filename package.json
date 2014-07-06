@@ -1,0 +1,17 @@
+{
+  "name": "music-playground",
+  "version": "0.1.0",
+  "description": "A music playground tool for your local music",
+  "main": "index.html",
+  "author": "Baptiste Rios Campo <baptiste.rios@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-sass": "~0.7.3",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-connect": "~0.8.0",
+    "musicmetadata": "~0.4.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "btoa": "~1.1.2"
+  }
+}
