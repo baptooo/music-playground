@@ -21,7 +21,7 @@ module.exports = function(grunt) {
             dev: {
                 options: {
                     hostname: '<%= userConfig.hostname || "localhost" %>',
-                    port: 1990,
+                    port: '<%= userConfig.port || 1990 %>',
                     middleware: function(connect, options, middlewares) {
                         var re = /\/track\/\?path=/i,
                             userConfig = grunt.config.get('userConfig'),

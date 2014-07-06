@@ -16,13 +16,15 @@
 
         Available options:
             1. basePath: store the basePath of your music library
-            2. hostname: define the hostname used by grunt-contrib-connect
+            2. hostname: define the hostname used by server
+            3. port: define on which port server will listen
         
     Example:
     ```js
     {
         "basePath": "Disk:/myMusic"
         "hostname": "myDomain.com"
+        "port": 80
     }
     ```
     
