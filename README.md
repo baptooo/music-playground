@@ -1,5 +1,5 @@
-## Music Playground
-# A music playground tool for your local music
+# Music Playground
+## A music playground tool for your local music
 
 ## Installation
 
