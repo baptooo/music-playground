@@ -26,7 +26,7 @@ grunt.task.registerTask('parseApi', 'Api automatic parser', function() {
             stream = fs.createReadStream(filepath),
             parser = mmd(stream);
 
-        console.log((i++) + '/' + totalFiles + ' done...')
+        console.log((i++) + '/' + totalFiles + ' done...');
         console.log('Reading ID3 tags for: ' + filepath);
 
         parser.on('done', function(err) {
@@ -43,7 +43,7 @@ grunt.task.registerTask('parseApi', 'Api automatic parser', function() {
     getID3();
 
     function formatName(name) {
-        return name.toLowerCase().replace(/[^\w+]/gi, '')
+        return name.toLowerCase().replace(/[^\w+]/gi, '');
     }
 
     function getPicture(data, formatAlbum) {
@@ -56,7 +56,8 @@ grunt.task.registerTask('parseApi', 'Api automatic parser', function() {
         for (var i = 0; i < image.data.length; i++) {
             base64String += String.fromCharCode(image.data[i]);
         }
-        var path = 'api/pictures/' + formatAlbum + '.' + image.format;
+        var imageFormat = /\.(jpg|png|gif|bmp)$/i.test(image.format) ? image.format : '.jpg';
+        var path = 'api/pictures/' + formatAlbum + '.' + imageFormat;
         grunt.file.write(path, btoa(base64String), {
             encoding: 'base64'
         });

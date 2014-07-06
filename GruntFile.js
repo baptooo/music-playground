@@ -20,7 +20,7 @@ module.exports = function(grunt) {
         connect: {
             dev: {
                 options: {
-                    hostname: 'localhost',
+                    hostname: '<%= userConfig.hostname || "localhost" %>',
                     port: 1990,
                     middleware: function(connect, options, middlewares) {
                         var re = /\/track\/\?path=/i,
@@ -82,5 +82,5 @@ module.exports = function(grunt) {
     grunt.registerTask('debug', ['sass', 'watch']);
     grunt.registerTask('server', ['connect:dev', 'sass', 'watch']);
 
-    grunt.registerTask('api', [ 'parseApi']);
+    grunt.registerTask('api', ['clean:api', 'parseApi']);
 }
