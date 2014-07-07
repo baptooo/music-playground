@@ -1,7 +1,7 @@
 <section class="pageSection" id="home" ng-controller="Home">
     <div class="player col-md-12 push-top text-center" ng-if="trackPath">
         <a href="{{trackPath}}" target="_blank" type="button" class="btn btn-default btn-sm pull-left">Télécharger le titre</a>
-        <audio controls audio-player="" src="{{trackPath}}" autoplay="true"></audio>
+        <audio controls audio-player="" ng-src="{{trackPath}}" autoplay="true"></audio>
         <button type="button" class="btn btn-default btn-sm pull-right" ng-click="reset()">Réinitialiser</button>
     </div>
     <div class="row">
@@ -26,7 +26,7 @@
                     class="actionList__item actionList__item--album slide-right slide-right-delayed clearfix"
                 ><article class="albumInfo pull-left">
                         <img ng-if="album.picture" width="80"
-                             src="{{getImgSrc(album.picture)}}" alt="" class="pull-left"
+                             ng-src="{{album.picture}}" alt="" class="pull-left"
                         />
                         <h3 class="albumInfo__title text-ellipsis">{{album.name}}</h3>
                         <ul class="albumInfo__list list-unstyled">

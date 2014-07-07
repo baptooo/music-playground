@@ -21,7 +21,7 @@ app.service('trackService', ['$http', '$q', function($http, $q) {
             return deffer.promise;
         },
         getTrackPath: function(track) {
-            return trackBaseUrl + escape(track.path);
+            return trackBaseUrl + encodeURI(track.path);
         }
     }
 }]);

@@ -25,7 +25,7 @@ module.exports = function(grunt) {
                     middleware: function(connect, options, middlewares) {
                         var re = /\/track\/\?path=/i,
                             userConfig = grunt.config.get('userConfig'),
-                            basePathRe = new RegExp(escape(userConfig.basePath), 'i');
+                            basePathRe = new RegExp(userConfig.basePath, 'i');
 
                         middlewares.push(function(req, res, next) {
                             var escapedURL = decodeURI(req.url);
