@@ -1,0 +1,20 @@
+<div class="col-md-4 slide-right">
+    <h2>- {{tracksHead.title}} -</h2>
+    <h3>by {{tracksHead.artist}}</h3>
+    <table class="table table-hover table-responsive">
+        <tr ng-repeat="(i, track) in tracks | orderBy:'track.no'"
+            ng-class="{ 'success': trackSelected == track.path }"
+                ><td><span class="text-ellipsis pull-left">{{track.track.no || i + 1}} - {{track.title}}</span>
+        </td>
+            <td>
+                <button type="button" ng-click="playSong(track)" class="btn btn-default btn-sm pull-right">
+                    Ecouter
+                </button>
+                <button type="button" ng-if="trackSelected == track.path"
+                        ng-click="stopSong()"
+                        class="btn btn-default btn-sm pull-right slide-left"
+                        >Arrêter</button>
+            </td>
+        </tr>
+    </table>
+</div>

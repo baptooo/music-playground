@@ -1,0 +1,15 @@
+<div class="col-md-3">
+    <div class="form-group">
+        <input type="text" ng-model="nameFilter" class="form-control" placeholder="Chercher par nom" />
+    </div>
+    <ul class="list-unstyled actionList">
+        <li ng-repeat="artist in artists | filter:nameFilter | orderBy:'name'"
+            class="clearfix actionList__item"
+                ><span class="text">{{artist.name}}</span>
+            <button type="button" ng-click="navigateToArtist(artist)" class="btn btn-default btn-sm pull-right">
+                Voir les albums
+            </button>
+        </li>
+    </ul>
+</div>
+<div ui-view class="slide-right"></div>

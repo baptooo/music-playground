@@ -1,0 +1,22 @@
+<div class="col-md-5">
+    <h1 class="text-ellipsis">{{currentArtist.name}}</h1>
+    <ul class="list-unstyled actionList">
+        <li ng-repeat="album in albums | orderBy:'year'"
+            class="actionList__item actionList__item--album slide-right slide-right-delayed clearfix"
+                ><article class="albumInfo pull-left">
+            <img ng-if="album.picture" width="80"
+                 ng-src="{{album.picture}}" alt="" class="pull-left"
+                    />
+            <h3 class="albumInfo__title text-ellipsis">{{album.name}}</h3>
+            <ul class="albumInfo__list list-unstyled">
+                <li class="albumInfo__item"><strong>Genre:</strong> {{getAlbumGenre(album)}}</li>
+                <li class="albumInfo__item"><strong>Année:</strong> {{album.year}}</li>
+            </ul>
+        </article>
+            <button type="button" ng-click="navigateToTracks(album)" class="btn btn-default btn-sm pull-right">
+                Voir les Chansons
+            </button>
+        </li>
+    </ul>
+</div>
+<div ui-view></div>
