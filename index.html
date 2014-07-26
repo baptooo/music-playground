@@ -26,8 +26,9 @@
         <script src="src/js/services/trackService.js"></script>
 
         <!-- Controllers -->
-        <script src="src/js/controllers/home.js"></script>
+        <script src="src/js/controllers/artists.js"></script>
         <script src="src/js/controllers/albums.js"></script>
+        <script src="src/js/controllers/tracks.js"></script>
 
         <!-- Filters -->
         <script src="src/js/filters/startFrom.js"></script>
@@ -36,6 +37,11 @@
         <script src="src/js/directives/audioPlayer.js"></script>
     </head>
     <body ng-app="sandbox">
-        <div id="main" ui-view></div>
+    <section class="pageSection" id="home">
+        <div ng-include="'src/views/player.html'"></div>
+        <div class="row">
+            <div ui-view></div>
+        </div>
+    </section>
     </body>
 </html>
