@@ -25,12 +25,13 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             templateUrl: 'src/views/albums.html',
             resolve: {
                 albumPromise: function($stateParams, albumService) {
-                    if($stateParams.artist) {
-                        return albumService.getAlbumsForArtist($stateParams.artist)
-                            .then(function(data) {
-                                return data;
-                            });
-                    }
+                    return albumService.getAlbumsForArtist($stateParams.artist)
+                        .then(function(data) {
+                            return data;
+                        });
+                },
+                artistPromise: function($stateParams, artistService) {
+                    return artistService.getArtistByName($stateParams.artist);
                 }
             },
             controller: 'Albums'
@@ -40,12 +41,13 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             templateUrl: 'src/views/tracks.html',
             resolve: {
                 tracksPromise: function($stateParams, trackService) {
-                    if($stateParams.album) {
-                        return trackService.getTracksForAlbum($stateParams.album)
-                            .then(function(data) {
-                                return data;
-                            });
-                    }
+                    return trackService.getTracksForAlbum($stateParams.album)
+                        .then(function(data) {
+                            return data;
+                        });
+                },
+                albumPromise: function($stateParams, albumService) {
+                    return albumService.getAlbumByName($stateParams.album, $stateParams.artist);
                 }
             },
             controller: 'Tracks'

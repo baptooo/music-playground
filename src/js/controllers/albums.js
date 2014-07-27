@@ -1,13 +1,36 @@
-app.controller('Albums', function($scope, albumPromise, $location, albumService, $stateParams, $rootScope) {
+app.controller('Albums', function($scope, albumPromise, artistPromise, $location, albumService, $stateParams, $rootScope) {
     $scope.albums = albumPromise;
+    var _t = this;
 
-    $scope.navigateToTracks = function(album) {
+    this.setCurrentAlbum = function(album) {
         $rootScope.currentAlbum = album;
         $rootScope.tracksHead = {
             title: album.name,
             artist: $scope.currentArtist.name
         }
+    }
+
+    $scope.navigateToTracks = function(album) {
+        _t.setCurrentAlbum(album);
         $location.path('/albums/' + $stateParams.artist + '/tracks/' + album.label);
+    };
+
+    var watchAlbum = $rootScope.$watch('currentAlbumName', function(value) {
+        var dataLen = $scope.albums.length;
+        if(!value || !dataLen) {
+            return true;
+        }
+        for (var i = 0; i < dataLen; i++) {
+            if($scope.albums[i].label == value) {
+                _t.setCurrentAlbum($scope.albums[i]);
+                break;
+            }
+        }
+        watchAlbum();
+    });
+
+    if($stateParams.artist) {
+        $rootScope.currentArtistName = $stateParams.artist;
     }
 
     $scope.getAlbumGenre = function(album) {

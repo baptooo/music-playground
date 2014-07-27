@@ -4,6 +4,7 @@ app.service('artistService', ['$http', '$q', function($http, $q) {
     return {
         getArtists: function() {
             var deffer = $q.defer();
+
             $http({
                 method: 'GET',
                 url: apiUrl + 'artists.json'
@@ -20,6 +21,17 @@ app.service('artistService', ['$http', '$q', function($http, $q) {
                 return deffer.error(new Error('Error, no data.'));
             });
             return deffer.promise;
+        },
+        getArtistByName: function(name) {
+            return this.getArtists()
+                .then(function(data) {
+                    var dataLen = data.length;
+                    for(var i = 0; i < dataLen; i++) {
+                        if(data[i].label == name) {
+                            return data[i];
+                        }
+                    }
+                });
         }
     };
 }]);

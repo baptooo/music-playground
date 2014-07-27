@@ -3,7 +3,7 @@ app.service('albumService', ['$http', '$q', function($http, $q) {
 
     return {
         getAlbumsForArtist: function(name) {
-            var deffer = $q.defer();
+            var _t = this, deffer = $q.defer();
             $http({
                 method: 'GET',
                 url: apiUrl + name + '.json'
@@ -21,6 +21,17 @@ app.service('albumService', ['$http', '$q', function($http, $q) {
         },
         getGenre: function(album) {
             return album.genre.join(',');
+        },
+        getAlbumByName: function(album, artist) {
+            return this.getAlbumsForArtist(artist)
+                .then(function(data) {
+                    var dataLen = data.length;
+                    for (var i = 0; i < dataLen; i++) {
+                        if(data[i].label == album) {
+                            return data[i];
+                        }
+                    }
+                });
         }
     };
 }]);
