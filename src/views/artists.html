@@ -6,7 +6,7 @@
         <li ng-repeat="artist in artists | filter:nameFilter | orderBy:'name'"
             class="clearfix actionList__item"
                 ><span class="text">{{artist.name}}</span>
-            <button type="button" ng-click="navigateToArtist(artist)" class="btn btn-default btn-sm pull-right">
+            <button type="button" ng-click="navigateToArtist(artist)" class="btn btn-default btn-sm pull-right return-top">
                 Voir les albums
             </button>
         </li>
