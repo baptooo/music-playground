@@ -15,7 +15,7 @@ app.controller('Artists', function($scope, artistPromise, $location, $rootScope)
         scrollView();
     };
 
-    var watchArtist = $rootScope.$watch('currentArtistName', function(value) {
+    $rootScope.$watch('currentArtistName', function(value) {
         var dataLen = $scope.artists.length;
         if(!value || !dataLen) {
             return true;
@@ -26,7 +26,6 @@ app.controller('Artists', function($scope, artistPromise, $location, $rootScope)
                 break;
             }
         }
-        watchArtist();
     });
 
     $scope.reset = function() {

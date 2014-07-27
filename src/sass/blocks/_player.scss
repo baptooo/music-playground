@@ -4,6 +4,11 @@
   padding-bottom: 15px;
 
   audio {
+    width: 100%;
+  }
+
+  &__list {
+    display: inline-block;
     width: 50%;
   }
 }

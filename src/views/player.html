@@ -1,5 +1,12 @@
 <div class="player col-md-12 push-top text-center" ng-if="trackPath">
     <a href="{{trackPath}}" target="_blank" type="button" class="btn btn-default btn-sm pull-left">Télécharger le titre</a>
-    <audio controls audio-player="" ng-src="{{trackPath}}" autoplay="true"></audio>
+    <ul class="player__list list-unstyled">
+        <li>
+            <audio controls audio-player="" ng-src="{{trackPath}}" autoplay="true"></audio>
+        </li>
+        <li>
+            <a href="/#{{trackUri}}">{{currentTrack.artist}} - {{currentTrack.title}}</a>
+        </li>
+    </ul>
     <button type="button" class="btn btn-default btn-sm pull-right" ng-click="reset()">Réinitialiser</button>
 </div>

@@ -15,7 +15,7 @@ app.controller('Albums', function($scope, albumPromise, artistPromise, $location
         $location.path('/albums/' + $stateParams.artist + '/tracks/' + album.label);
     };
 
-    var watchAlbum = $rootScope.$watch('currentAlbumName', function(value) {
+    $rootScope.$watch('currentAlbumName', function(value) {
         var dataLen = $scope.albums.length;
         if(!value || !dataLen) {
             return true;
@@ -26,7 +26,6 @@ app.controller('Albums', function($scope, albumPromise, artistPromise, $location
                 break;
             }
         }
-        watchAlbum();
     });
 
     if($stateParams.artist) {
