@@ -29,9 +29,6 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                         .then(function(data) {
                             return data;
                         });
-                },
-                artistPromise: function($stateParams, artistService) {
-                    return artistService.getArtistByName($stateParams.artist);
                 }
             },
             controller: 'Albums'
@@ -45,11 +42,14 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                         .then(function(data) {
                             return data;
                         });
-                },
-                albumPromise: function($stateParams, albumService) {
-                    return albumService.getAlbumByName($stateParams.album, $stateParams.artist);
                 }
             },
             controller: 'Tracks'
+        })
+        .state('artists.albums.tracks.listen', {
+            url: '/listen/:track',
+            controller: function($rootScope, $stateParams) {
+                $rootScope.currentTrackName = $stateParams.track;
+            }
         })
 });

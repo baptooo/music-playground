@@ -4,7 +4,6 @@ app.controller('Artists', function($scope, artistPromise, $location, $rootScope)
     $scope.navigateToArtist = function(artist) {
         $rootScope.currentArtist = artist;
         $location.path('/albums/' + artist.label);
-        scrollView();
     };
 
     $rootScope.$watch('currentArtistName', function(value) {
