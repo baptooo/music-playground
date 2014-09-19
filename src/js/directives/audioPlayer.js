@@ -1,8 +1,10 @@
-app.directive('audioPlayer', function() {
+app.directive('audioPlayer', ['playlistService', function(playlistService) {
     return {
         restrict: 'A',
-        link: function(element, attrs) {
-
+        link: function(scope, element, attrs) {
+            element.on('ended', function() {
+                playlistService.next();
+            });
         }
     }
-});
+}]);

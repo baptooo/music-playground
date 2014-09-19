@@ -49,6 +49,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         .state('artists.albums.tracks.listen', {
             url: '/listen/:track',
             controller: function($rootScope, $stateParams) {
+                $rootScope.deepLinkTrack = true;
                 $rootScope.currentTrackName = $stateParams.track;
             }
         })

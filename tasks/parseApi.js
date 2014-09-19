@@ -12,7 +12,8 @@ grunt.task.registerTask('parseApi', 'Api automatic parser', function() {
         global = [],
         artists = {},
         albums = {},
-        tracks = {};
+        tracks = {},
+        startTime = Date.now();
 
     grunt.file.recurse(config.basePath, function(abspath) {
         if (/\.mp3$/.test(abspath)) {
@@ -116,6 +117,10 @@ grunt.task.registerTask('parseApi', 'Api automatic parser', function() {
             grunt.file.write('api/tracks/' + i + '.json', JSON.stringify(tracks[i]));
         }
         grunt.file.write('api/artists.json', JSON.stringify(artists));
+
+        var elapsed = (Date.now() - startTime) / 1000;
+
+        console.log('Success, parsing tooks: ' + elapsed + 's');
         done();
     }
 });

@@ -10,6 +10,9 @@
                 <button type="button" ng-click="playSong(track)" class="btn btn-default btn-sm pull-right return-top">
                     Ecouter
                 </button>
+                <button type="button" ng-click="addToPlaylist(track)" class="btn btn-default btn-sm pull-right">
+                    Lire après
+                </button>
                 <button type="button" ng-if="trackSelected == track.path"
                         ng-click="stopSong()"
                         class="btn btn-default btn-sm pull-right slide-left"

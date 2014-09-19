@@ -34,8 +34,11 @@ module.exports = function(grunt) {
                                     stat = fs.statSync(filePath);
 
                                 res.writeHead(200, {
-                                    'Content-Type': 'audio/mpeg',
+                                    'Content-Type': "audio/mpeg, audio/x-mpeg, audio/x-mpeg-3, audio/mpeg3",
                                     'Content-Length': stat.size,
+                                    'Content-Disposition': 'filename="' + filePath + '"',
+                                    'X-Pad': 'avoid browser bug',
+                                    'Cache-Control': 'no-cache',
                                     'Content-Range': 'bytes ' + (stat.size / 10 << 0) + '-' + (stat.size - 1) + '/' + stat.size,
                                     'Accept-Ranges' : "bytes"
                                 });
@@ -47,6 +50,7 @@ module.exports = function(grunt) {
                                 return next();
                             }
                         });
+
                         return middlewares;
                     }
                 }
