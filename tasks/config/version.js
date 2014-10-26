@@ -12,8 +12,14 @@ module.exports = function(grunt) {
       pkg: 'package.json',
       release: mode
     },
-    dist: {
+    json: {
       src: ['package.json', 'bower.json']
+    },
+    md: {
+      options: {
+        prefix: 'v '
+      },
+      src: ['README.md']
     }
   });
   grunt.loadNpmTasks('grunt-version');

@@ -1,4 +1,4 @@
-# Music Playground
+# Music Playground (v 0.2.0)
 ## A music playground tool for your local music
 
 ## Requirements
