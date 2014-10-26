@@ -13,7 +13,7 @@ module.exports = function(grunt) {
                     loadPath: ['bower_components/bootstrap-sass/lib', './']
                 },
                 files: {
-                    'src/css/angular-sandbox.min.css': 'src/sass/main.scss'
+                    'src/css/music-playground.min.css': 'src/sass/main.scss'
                 }
             }
         },
