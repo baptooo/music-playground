@@ -6,12 +6,13 @@
   "author": "Baptiste Rios Campo <baptiste.rios@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "btoa": "~1.1.2",
     "grunt": "~0.4.5",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-connect": "~0.8.0",
     "grunt-contrib-sass": "~0.7.3",
     "grunt-contrib-watch": "~0.6.1",
-    "grunt-contrib-connect": "~0.8.0",
-    "musicmetadata": "~0.4.0",
-    "grunt-contrib-clean": "~0.5.0",
-    "btoa": "~1.1.2"
+    "include-all": "^0.1.6",
+    "musicmetadata": "~0.4.0"
   }
 }
