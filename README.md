@@ -29,4 +29,4 @@
     ```
     
 4. Generate the api: "grunt api"
-5. Start the server "grunt server" and you are ready !
+5. Start the server with the default grunt task "grunt" and you are ready !
