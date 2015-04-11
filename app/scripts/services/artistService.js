@@ -1,4 +1,4 @@
-app.service('artistService', ['$http', '$q', function ($http, $q) {
+module.exports = function ($http, $q) {
   var apiUrl = '/api/';
 
   return {
@@ -34,4 +34,4 @@ app.service('artistService', ['$http', '$q', function ($http, $q) {
         });
     }
   };
-}]);
+};

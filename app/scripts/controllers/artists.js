@@ -1,9 +1,14 @@
-app.controller('Artists', function ($scope, artistPromise, $location, $rootScope) {
+module.exports = function ($scope, artistPromise, $location, $rootScope) {
   $scope.artists = artistPromise;
 
   $scope.navigateToArtist = function (artist) {
     $rootScope.currentArtist = artist;
     $location.path('/albums/' + artist.label);
+  };
+
+  $scope.onChange = function () {
+    var value = $scope.nameFilter;
+    console.log($scope);
   };
 
   $rootScope.$watch('currentArtistName', function (value) {
@@ -18,4 +23,4 @@ app.controller('Artists', function ($scope, artistPromise, $location, $rootScope
       }
     }
   });
-});
+};

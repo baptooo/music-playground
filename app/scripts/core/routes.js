@@ -1,7 +1,4 @@
-var app = angular.module('sandbox', ['ngRoute', 'ui.router', 'ngAnimate']);
-
-app.config(function ($stateProvider, $urlRouterProvider) {
-
+module.exports = function ($stateProvider, $urlRouterProvider) {
   // Default Route is home
   $urlRouterProvider.otherwise('/');
 
@@ -9,7 +6,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('artists', {
       url: '/',
-      templateUrl: 'src/views/artists.html',
+      templateUrl: 'views/artists.html',
       resolve: {
         artistPromise: function (artistService) {
           return artistService.getArtists()
@@ -22,7 +19,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     })
     .state('artists.albums', {
       url: 'albums/:artist',
-      templateUrl: 'src/views/albums.html',
+      templateUrl: 'views/albums.html',
       resolve: {
         albumPromise: function ($stateParams, albumService) {
           return albumService.getAlbumsForArtist($stateParams.artist)
@@ -35,7 +32,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     })
     .state('artists.albums.tracks', {
       url: '/tracks/:album',
-      templateUrl: 'src/views/tracks.html',
+      templateUrl: 'views/tracks.html',
       resolve: {
         tracksPromise: function ($stateParams, trackService) {
           return trackService.getTracksForAlbum($stateParams.album)
@@ -53,4 +50,4 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         $rootScope.currentTrackName = $stateParams.track;
       }
     })
-});
+};

@@ -4,11 +4,11 @@ module.exports = function (grunt) {
   var fs = require('fs'),
     url = require('url');
 
-
   grunt.config.set('connect', {
     options: {
       hostname: '<%= userConfig.hostname || "localhost" %>',
       port: '<%= userConfig.port || 1990 %>',
+      base: '<%= buildConfig.paths.app %>',
       middleware: function (connect, options, middlewares) {
         var re = /\/track\/\?path=/i,
           userConfig = grunt.config.get('userConfig'),
@@ -37,6 +37,14 @@ module.exports = function (grunt) {
             return next();
           }
         });
+
+        middlewares = middlewares.concat([
+          connect.static(grunt.config.get('buildConfig.paths.app')),
+          connect().use(
+            '/api',
+            connect.static('./api')
+          )
+        ]);
 
         return middlewares;
       }

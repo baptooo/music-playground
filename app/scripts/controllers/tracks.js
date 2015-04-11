@@ -1,4 +1,4 @@
-app.controller('Tracks', function ($scope, tracksPromise, albumPromise, trackService, playlistService, $rootScope, $stateParams, $location) {
+module.exports = function ($scope, tracksPromise, albumPromise, trackService, playlistService, $rootScope, $stateParams, $location) {
   $scope.tracks = tracksPromise;
 
   $scope.playSong = function (track) {
@@ -37,4 +37,4 @@ app.controller('Tracks', function ($scope, tracksPromise, albumPromise, trackSer
     $rootScope.trackPath = '';
     $rootScope.trackSelected = '';
   };
-});
+};

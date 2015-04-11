@@ -1,4 +1,4 @@
-app.controller('Playlist', ['$scope', 'playlistService', 'trackService', '$location', function ($scope, playlistService, trackService, $location) {
+module.exports = function ($scope, playlistService, trackService, $location) {
   $scope.tracks = playlistService.getTracks();
   $scope.listShown = false;
 
@@ -26,4 +26,4 @@ app.controller('Playlist', ['$scope', 'playlistService', 'trackService', '$locat
   $scope.next = function () {
     playlistService.next();
   };
-}]);
+};

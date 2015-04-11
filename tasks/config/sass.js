@@ -4,11 +4,10 @@ module.exports = function(grunt) {
   grunt.config.set('sass', {
     dev: {
       options: {
-        sourcemap: true,
-        loadPath: ['bower_components/bootstrap-sass/lib', './']
+        loadPath: ['<%= buildConfig.paths.app %>/vendor/bootstrap-sass/vendor/assets/stylesheets', './']
       },
       files: {
-        'src/css/music-playground.min.css': 'src/sass/main.scss'
+        '<%= buildConfig.paths.app %>/css/music-playground.min.css': '<%= buildConfig.paths.app %>/styles/main.scss'
       }
     }
   });

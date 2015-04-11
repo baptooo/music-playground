@@ -1,4 +1,4 @@
-app.service('trackService', ['$http', '$q', '$stateParams', '$rootScope', function ($http, $q, $stateParams, $rootScope) {
+module.exports = function ($http, $q, $stateParams, $rootScope) {
   var apiUrl = '/api/tracks/',
     trackBaseUrl = '/track/?path=';
 
@@ -37,6 +37,6 @@ app.service('trackService', ['$http', '$q', '$stateParams', '$rootScope', functi
         title: track.title,
         artist: $rootScope.currentArtist.name
       };
-    },
+    }
   }
-}]);
+};

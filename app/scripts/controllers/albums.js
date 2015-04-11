@@ -1,4 +1,4 @@
-app.controller('Albums', function ($scope, albumPromise, artistPromise, $location, albumService, $stateParams, $rootScope) {
+module.exports = function ($scope, albumPromise, artistPromise, $location, albumService, $stateParams, $rootScope) {
   $scope.albums = albumPromise;
   var _t = this;
 
@@ -35,4 +35,4 @@ app.controller('Albums', function ($scope, albumPromise, artistPromise, $locatio
   $scope.getAlbumGenre = function (album) {
     return albumService.getGenre(album);
   };
-});
+};

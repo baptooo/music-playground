@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Music Playground</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="img-src 'self' data:"/>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/music-playground.min.css"/>
+</head>
+  <body ng-app="sandbox">
+    <section class="pageSection" id="home">
+      <div ng-include="'views/player.html'"></div>
+      <div class="row">
+        <div ui-view></div>
+      </div>
+    </section>
+
+    <script src="build/main.js"></script>
+  </body>
+</html>

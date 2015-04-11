@@ -3,14 +3,15 @@
 module.exports = function(grunt) {
   grunt.config.set('watch', {
     sass: {
-      files: 'src/sass/**/*.scss',
+      files: '<%= buildConfig.paths.app %>/styles/**/*.scss',
       tasks: ['sass:dev']
     },
     js: {
-      files: 'src/js/**/*.js'
+      files: '<%= buildConfig.paths.app %>/scripts/**/*.js',
+      tasks: ['browserify:build']
     },
     html: {
-      files: ['index.html', 'src/views/**/*.html']
+      files: ['<%= buildConfig.paths.app %>/index.html', '<%= buildConfig.paths.app %>/views/**/*.html']
     }
   });
 

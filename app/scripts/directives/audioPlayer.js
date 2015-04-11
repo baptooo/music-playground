@@ -1,4 +1,4 @@
-app.directive('audioPlayer', ['playlistService', function (playlistService) {
+module.exports = function (playlistService) {
   return {
     restrict: 'A',
     link: function (scope, element, attrs) {
@@ -7,4 +7,4 @@ app.directive('audioPlayer', ['playlistService', function (playlistService) {
       });
     }
   }
-}]);
+};

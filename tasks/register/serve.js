@@ -3,7 +3,7 @@
 module.exports = function(grunt) {
   grunt.registerTask('serve', [
       'connect:dev',
-      'sass:dev',
+      'build',
       'watch'
     ]
   );

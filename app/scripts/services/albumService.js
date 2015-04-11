@@ -1,4 +1,4 @@
-app.service('albumService', ['$http', '$q', function ($http, $q) {
+module.exports = function ($http, $q) {
   var apiUrl = '/api/albums/';
 
   return {
@@ -34,4 +34,4 @@ app.service('albumService', ['$http', '$q', function ($http, $q) {
         });
     }
   };
-}]);
+};

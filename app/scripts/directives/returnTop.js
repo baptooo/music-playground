@@ -1,4 +1,4 @@
-app.directive('returnTop', function () {
+module.exports = function () {
   return {
     restrict: 'C',
     link: function (scope, element) {
@@ -10,4 +10,4 @@ app.directive('returnTop', function () {
       });
     }
   }
-})
+};
