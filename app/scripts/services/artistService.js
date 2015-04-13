@@ -1,5 +1,4 @@
-module.exports = function ($http, $q) {
-  var apiUrl = '/api/';
+module.exports = function ($http, $q, apiUrl) {
 
   return {
     getArtists: function () {
@@ -7,7 +6,7 @@ module.exports = function ($http, $q) {
 
       $http({
         method: 'GET',
-        url: apiUrl + 'artists.json'
+        url: apiUrl + '/artists.json'
       }).success(function (data) {
         var artists = [];
         for (var i in data) {

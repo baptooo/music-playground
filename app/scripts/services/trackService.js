@@ -1,6 +1,6 @@
-module.exports = function ($http, $q, $stateParams, $rootScope) {
-  var apiUrl = '/api/tracks/',
-    trackBaseUrl = '/track/?path=';
+module.exports = function ($http, $q, $stateParams, $rootScope, apiUrl) {
+  apiUrl += '/tracks/';
+  var trackBaseUrl = '/track/?path=';
 
   return {
     getTrackRoute: function (track) {

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   grunt.config.set('watch', {
     sass: {
       files: '<%= buildConfig.paths.app %>/styles/**/*.scss',

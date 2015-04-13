@@ -4,7 +4,8 @@ var angular = require('angular'),
 var app = angular.module('sandbox', [
   require('angular-animate'),
   require('angular-ui-router')
-]).config(routes);
+]).config(routes)
+  .constant('apiUrl', '/api');
 
 // Services
 app.service('artistService', require('./services/artistService'));

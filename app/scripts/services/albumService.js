@@ -1,12 +1,12 @@
-module.exports = function ($http, $q) {
-  var apiUrl = '/api/albums/';
+module.exports = function ($http, $q, apiUrl) {
+  apiUrl += '/albums';
 
   return {
     getAlbumsForArtist: function (name) {
       var _t = this, deffer = $q.defer();
       $http({
         method: 'GET',
-        url: apiUrl + name + '.json'
+        url: apiUrl + '/' + name + '.json'
       }).success(function (data) {
         var albums = [];
         for (var i in data) {

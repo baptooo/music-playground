@@ -198,7 +198,8 @@ var angular = require('angular'),
 var app = angular.module('sandbox', [
   require('angular-animate'),
   require('angular-ui-router')
-]).config(routes);
+]).config(routes)
+  .constant('apiUrl', '/api');
 
 // Services
 app.service('artistService', require('./services/artistService'));
@@ -219,15 +220,15 @@ app.filter('startFrom', require('./filters/startFrom'))
 app.directive('audioPlayer', require('./directives/audioPlayer'));
 app.directive('returnTop', require('./directives/returnTop'));
 },{"./controllers/albums":1,"./controllers/artists":2,"./controllers/tracks":3,"./core/routes":4,"./directives/audioPlayer":5,"./directives/returnTop":6,"./filters/startFrom":7,"./services/albumService":9,"./services/artistService":10,"./services/playlistService":11,"./services/trackService":12,"angular":17,"angular-animate":14,"angular-ui-router":15}],9:[function(require,module,exports){
-module.exports = function ($http, $q) {
-  var apiUrl = '/api/albums/';
+module.exports = function ($http, $q, apiUrl) {
+  apiUrl += '/albums';
 
   return {
     getAlbumsForArtist: function (name) {
       var _t = this, deffer = $q.defer();
       $http({
         method: 'GET',
-        url: apiUrl + name + '.json'
+        url: apiUrl + '/' + name + '.json'
       }).success(function (data) {
         var albums = [];
         for (var i in data) {
@@ -257,8 +258,7 @@ module.exports = function ($http, $q) {
   };
 };
 },{}],10:[function(require,module,exports){
-module.exports = function ($http, $q) {
-  var apiUrl = '/api/';
+module.exports = function ($http, $q, apiUrl) {
 
   return {
     getArtists: function () {
@@ -266,7 +266,7 @@ module.exports = function ($http, $q) {
 
       $http({
         method: 'GET',
-        url: apiUrl + 'artists.json'
+        url: apiUrl + '/artists.json'
       }).success(function (data) {
         var artists = [];
         for (var i in data) {
@@ -373,9 +373,9 @@ module.exports = function (trackService, $rootScope) {
   return playlistService;
 };
 },{}],12:[function(require,module,exports){
-module.exports = function ($http, $q, $stateParams, $rootScope) {
-  var apiUrl = '/api/tracks/',
-    trackBaseUrl = '/track/?path=';
+module.exports = function ($http, $q, $stateParams, $rootScope, apiUrl) {
+  apiUrl += '/tracks/';
+  var trackBaseUrl = '/track/?path=';
 
   return {
     getTrackRoute: function (track) {
