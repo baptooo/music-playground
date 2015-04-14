@@ -1,6 +1,6 @@
 {
   "name": "music-playground",
-  "version": "0.2.0",
+  "version": "0.2.0-0",
   "description": "A music playground tool for your local music",
   "main": "index.html",
   "author": "Baptiste Rios Campo <baptiste.rios@gmail.com>",
