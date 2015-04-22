@@ -8,12 +8,14 @@
     />
   </div>
   <ul class="list-unstyled actionList">
-    <li ng-repeat="artist in artists | filter:nameFilter | orderBy:'name'"
+    <li ng-repeat="artist in artists.items | filter:nameFilter | orderBy:'name' track by $index"
         class="clearfix actionList__item"
       ><span class="text">{{artist.name}}</span>
-      <button type="button" ng-click="navigateToArtist(artist)" class="btn btn-default btn-sm pull-right return-top">
+      <a href ui-sref="artists.albums({
+        artist: artist.label
+      })" type="button" class="btn btn-default btn-sm pull-right return-top">
         Voir les albums
-      </button>
+      </a>
     </li>
   </ul>
 </div>

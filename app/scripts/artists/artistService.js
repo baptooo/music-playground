@@ -1,4 +1,4 @@
-module.exports = function ($http, $q, apiUrl) {
+function artistService($http, $q, apiUrl) {
 
   return {
     getArtists: function () {
@@ -33,4 +33,6 @@ module.exports = function ($http, $q, apiUrl) {
         });
     }
   };
-};
+}
+
+module.exports = artistService;

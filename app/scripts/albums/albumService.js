@@ -1,4 +1,4 @@
-module.exports = function ($http, $q, apiUrl) {
+function albumService($http, $q, apiUrl) {
   apiUrl += '/albums';
 
   return {
@@ -16,7 +16,7 @@ module.exports = function ($http, $q, apiUrl) {
         return deffer.resolve(albums);
       }).error(function () {
         return deffer.error(new Error('Error, no data.'));
-      })
+      });
       return deffer.promise;
     },
     getGenre: function (album) {
@@ -34,4 +34,6 @@ module.exports = function ($http, $q, apiUrl) {
         });
     }
   };
-};
+}
+
+module.exports = albumService;

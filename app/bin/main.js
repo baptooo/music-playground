@@ -1,7 +1,50 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = function ($scope, albumPromise, artistPromise, $location, albumService, $stateParams, $rootScope) {
-  $scope.albums = albumPromise;
-  var _t = this;
+function albumService($http, $q, apiUrl) {
+  apiUrl += '/albums';
+
+  return {
+    getAlbumsForArtist: function (name) {
+      var _t = this, deffer = $q.defer();
+      $http({
+        method: 'GET',
+        url: apiUrl + '/' + name + '.json'
+      }).success(function (data) {
+        var albums = [];
+        for (var i in data) {
+          data[i].label = i;
+          albums.push(data[i]);
+        }
+        return deffer.resolve(albums);
+      }).error(function () {
+        return deffer.error(new Error('Error, no data.'));
+      });
+      return deffer.promise;
+    },
+    getGenre: function (album) {
+      return album.genre.join(',');
+    },
+    getAlbumByName: function (album, artist) {
+      return this.getAlbumsForArtist(artist)
+        .then(function (data) {
+          var dataLen = data.length;
+          for (var i = 0; i < dataLen; i++) {
+            if (data[i].label == album) {
+              return data[i];
+            }
+          }
+        });
+    }
+  };
+}
+
+module.exports = albumService;
+
+},{}],2:[function(require,module,exports){
+function AlbumsCtrl($scope, albumPromise, $location, albumService, $stateParams, $rootScope) {
+  var albums = this;
+
+  albums.items = albumPromise;
+  albums.artist = $stateParams.artist;
 
   this.setCurrentAlbum = function (album) {
     $rootScope.currentAlbum = album;
@@ -9,21 +52,16 @@ module.exports = function ($scope, albumPromise, artistPromise, $location, album
       title: album.name,
       artist: $scope.currentArtist.name
     }
-  }
-
-  $scope.navigateToTracks = function (album) {
-    _t.setCurrentAlbum(album);
-    $location.path('/albums/' + $stateParams.artist + '/tracks/' + album.label);
   };
 
   $rootScope.$watch('currentAlbumName', function (value) {
-    var dataLen = $scope.albums.length;
+    var dataLen = albums.items.length;
     if (!value || !dataLen) {
       return true;
     }
     for (var i = 0; i < dataLen; i++) {
-      if ($scope.albums[i].label == value) {
-        _t.setCurrentAlbum($scope.albums[i]);
+      if (albums.items[i].label == value) {
+        albums.setCurrentAlbum(albums.items[i]);
         break;
       }
     }
@@ -36,35 +74,127 @@ module.exports = function ($scope, albumPromise, artistPromise, $location, album
   $scope.getAlbumGenre = function (album) {
     return albumService.getGenre(album);
   };
-};
-},{}],2:[function(require,module,exports){
-module.exports = function ($scope, artistPromise, $location, $rootScope) {
-  $scope.artists = artistPromise;
+}
 
-  $scope.navigateToArtist = function (artist) {
-    $rootScope.currentArtist = artist;
-    $location.path('/albums/' + artist.label);
-  };
+module.exports = AlbumsCtrl;
 
-  $scope.onChange = function () {
-    var value = $scope.nameFilter;
-    console.log($scope);
+},{}],3:[function(require,module,exports){
+function config($stateProvider) {
+  $stateProvider.state('artists.albums', {
+    url: 'albums/:artist',
+    templateUrl: 'scripts/albums/albums.tpl.html',
+    resolve: {
+      albumPromise: function ($stateParams, albumService) {
+        return albumService.getAlbumsForArtist($stateParams.artist)
+          .then(function (data) {
+            return data;
+          });
+      }
+    },
+    controller: 'AlbumsCtrl as albums'
+  })
+}
+
+module.exports = config;
+
+},{}],4:[function(require,module,exports){
+angular.module('albums', [])
+  .controller('AlbumsCtrl', require('./albums'))
+  .service('albumService', require('./albumService'))
+  .config(require('./config'));
+
+module.exports = 'albums';
+
+},{"./albumService":1,"./albums":2,"./config":3}],5:[function(require,module,exports){
+function artistService($http, $q, apiUrl) {
+
+  return {
+    getArtists: function () {
+      var deffer = $q.defer();
+
+      $http({
+        method: 'GET',
+        url: apiUrl + '/artists.json'
+      }).success(function (data) {
+        var artists = [];
+        for (var i in data) {
+          artists.push({
+            name: data[i],
+            label: i
+          });
+        }
+        return deffer.resolve(artists);
+      }).error(function () {
+        return deffer.error(new Error('Error, no data.'));
+      });
+      return deffer.promise;
+    },
+    getArtistByName: function (name) {
+      return this.getArtists()
+        .then(function (data) {
+          var dataLen = data.length;
+          for (var i = 0; i < dataLen; i++) {
+            if (data[i].label == name) {
+              return data[i];
+            }
+          }
+        });
+    }
   };
+}
+
+module.exports = artistService;
+
+},{}],6:[function(require,module,exports){
+function ArtistsCtrl(artistPromise, $rootScope) {
+  var artists = this;
+
+  artists.items = artistPromise;
 
   $rootScope.$watch('currentArtistName', function (value) {
-    var dataLen = $scope.artists.length;
+    var dataLen = artists.items.length;
     if (!value || !dataLen) {
       return true;
     }
     for (var i = 0; i < dataLen; i++) {
-      if ($scope.artists[i].label == value) {
-        $rootScope.currentArtist = $scope.artists[i];
+      if (artists.items[i].label == value) {
+        $rootScope.currentArtist = artists.items[i];
         break;
       }
     }
   });
-};
-},{}],3:[function(require,module,exports){
+}
+
+module.exports = ArtistsCtrl;
+
+},{}],7:[function(require,module,exports){
+function config($stateProvider) {
+  $stateProvider.state('artists', {
+    url: '/',
+    templateUrl: 'scripts/artists/artists.tpl.html',
+    resolve: {
+      artistPromise: function (artistService) {
+        return artistService.getArtists()
+          .then(function (data) {
+            return data;
+          });
+      }
+    },
+    controller: 'ArtistsCtrl as artists'
+  })
+}
+
+module.exports = config;
+
+},{}],8:[function(require,module,exports){
+angular.module('artists', [])
+  .controller('ArtistsCtrl', require('./artists'))
+  .service('artistService', require('./artistService'))
+  .config(require('./config'));
+
+module.exports = 'artists';
+
+},{"./artistService":5,"./artists":6,"./config":7}],9:[function(require,module,exports){
 module.exports = function ($scope, tracksPromise, albumPromise, trackService, playlistService, $rootScope, $stateParams, $location) {
   $scope.tracks = tracksPromise;
 
@@ -105,39 +235,13 @@ module.exports = function ($scope, tracksPromise, albumPromise, trackService, pl
     $rootScope.trackSelected = '';
   };
 };
-},{}],4:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = function ($stateProvider, $urlRouterProvider) {
   // Default Route is home
   $urlRouterProvider.otherwise('/');
 
   // Route configuration
   $stateProvider
-    .state('artists', {
-      url: '/',
-      templateUrl: 'views/artists.html',
-      resolve: {
-        artistPromise: function (artistService) {
-          return artistService.getArtists()
-            .then(function (data) {
-              return data;
-            });
-        }
-      },
-      controller: 'Artists'
-    })
-    .state('artists.albums', {
-      url: 'albums/:artist',
-      templateUrl: 'views/albums.html',
-      resolve: {
-        albumPromise: function ($stateParams, albumService) {
-          return albumService.getAlbumsForArtist($stateParams.artist)
-            .then(function (data) {
-              return data;
-            });
-        }
-      },
-      controller: 'Albums'
-    })
     .state('artists.albums.tracks', {
       url: '/tracks/:album',
       templateUrl: 'views/tracks.html',
@@ -159,7 +263,8 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
       }
     })
 };
-},{}],5:[function(require,module,exports){
+
+},{}],11:[function(require,module,exports){
 module.exports = function (playlistService) {
   return {
     restrict: 'A',
@@ -170,7 +275,7 @@ module.exports = function (playlistService) {
     }
   }
 };
-},{}],6:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = function () {
   return {
     restrict: 'C',
@@ -184,117 +289,40 @@ module.exports = function () {
     }
   }
 };
-},{}],7:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = function () {
   return function (input, start) {
     start = +start; //parse to int
     return input.slice(start);
   }
 };
-},{}],8:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var angular = require('angular'),
   routes = require('./core/routes');
 
-var app = angular.module('sandbox', [
+var app = angular.module('music-playground', [
   require('angular-animate'),
-  require('angular-ui-router')
+  require('angular-ui-router'),
+  require('./artists'),
+  require('./albums')
 ]).config(routes)
   .constant('apiUrl', '/api');
 
 // Services
-app.service('artistService', require('./services/artistService'));
-app.service('albumService', require('./services/albumService'));
 app.service('playlistService', require('./services/playlistService'));
 app.service('trackService', require('./services/trackService'));
 
 // Controllers
-app.controller('Albums', require('./controllers/albums'));
-app.controller('Artists', require('./controllers/artists'));
-app.controller('Albums', require('./controllers/albums'));
 app.controller('Tracks', require('./controllers/tracks'));
 
 // Filters
-app.filter('startFrom', require('./filters/startFrom'))
+app.filter('startFrom', require('./filters/startFrom'));
 
 // Directives
 app.directive('audioPlayer', require('./directives/audioPlayer'));
 app.directive('returnTop', require('./directives/returnTop'));
-},{"./controllers/albums":1,"./controllers/artists":2,"./controllers/tracks":3,"./core/routes":4,"./directives/audioPlayer":5,"./directives/returnTop":6,"./filters/startFrom":7,"./services/albumService":9,"./services/artistService":10,"./services/playlistService":11,"./services/trackService":12,"angular":17,"angular-animate":14,"angular-ui-router":15}],9:[function(require,module,exports){
-module.exports = function ($http, $q, apiUrl) {
-  apiUrl += '/albums';
 
-  return {
-    getAlbumsForArtist: function (name) {
-      var _t = this, deffer = $q.defer();
-      $http({
-        method: 'GET',
-        url: apiUrl + '/' + name + '.json'
-      }).success(function (data) {
-        var albums = [];
-        for (var i in data) {
-          data[i].label = i;
-          albums.push(data[i]);
-        }
-        return deffer.resolve(albums);
-      }).error(function () {
-        return deffer.error(new Error('Error, no data.'));
-      })
-      return deffer.promise;
-    },
-    getGenre: function (album) {
-      return album.genre.join(',');
-    },
-    getAlbumByName: function (album, artist) {
-      return this.getAlbumsForArtist(artist)
-        .then(function (data) {
-          var dataLen = data.length;
-          for (var i = 0; i < dataLen; i++) {
-            if (data[i].label == album) {
-              return data[i];
-            }
-          }
-        });
-    }
-  };
-};
-},{}],10:[function(require,module,exports){
-module.exports = function ($http, $q, apiUrl) {
-
-  return {
-    getArtists: function () {
-      var deffer = $q.defer();
-
-      $http({
-        method: 'GET',
-        url: apiUrl + '/artists.json'
-      }).success(function (data) {
-        var artists = [];
-        for (var i in data) {
-          artists.push({
-            name: data[i],
-            label: i
-          });
-        }
-        return deffer.resolve(artists);
-      }).error(function () {
-        return deffer.error(new Error('Error, no data.'));
-      });
-      return deffer.promise;
-    },
-    getArtistByName: function (name) {
-      return this.getArtists()
-        .then(function (data) {
-          var dataLen = data.length;
-          for (var i = 0; i < dataLen; i++) {
-            if (data[i].label == name) {
-              return data[i];
-            }
-          }
-        });
-    }
-  };
-};
-},{}],11:[function(require,module,exports){
+},{"./albums":4,"./artists":8,"./controllers/tracks":9,"./core/routes":10,"./directives/audioPlayer":11,"./directives/returnTop":12,"./filters/startFrom":13,"./services/playlistService":15,"./services/trackService":16,"angular":21,"angular-animate":18,"angular-ui-router":19}],15:[function(require,module,exports){
 module.exports = function (trackService, $rootScope) {
   var tracks = [], tracksClone = [], cbs = [];
 
@@ -372,7 +400,7 @@ module.exports = function (trackService, $rootScope) {
   };
   return playlistService;
 };
-},{}],12:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = function ($http, $q, $stateParams, $rootScope, apiUrl) {
   apiUrl += '/tracks/';
   var trackBaseUrl = '/track/?path=';
@@ -415,7 +443,7 @@ module.exports = function ($http, $q, $stateParams, $rootScope, apiUrl) {
     }
   }
 };
-},{}],13:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -2554,11 +2582,11 @@ angular.module('ngAnimate', ['ng'])
 
 })(window, window.angular);
 
-},{}],14:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 require('./angular-animate');
 module.exports = 'ngAnimate';
 
-},{"./angular-animate":13}],15:[function(require,module,exports){
+},{"./angular-animate":17}],19:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.2.13
@@ -6791,7 +6819,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],16:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -33101,8 +33129,8 @@ var minlengthDirective = function() {
 })(window, document);
 
 !window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
-},{}],17:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":16}]},{},[8]);
+},{"./angular":20}]},{},[14]);
