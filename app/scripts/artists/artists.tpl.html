@@ -13,7 +13,7 @@
       ><span class="text">{{artist.name}}</span>
       <a href ui-sref="artists.albums({
         artist: artist.label
-      })" type="button" class="btn btn-default btn-sm pull-right return-top">
+      })" ng-click="artists.updateCurrentArtist(artist)" type="button" class="btn btn-default btn-sm pull-right return-top">
         Voir les albums
       </a>
     </li>
