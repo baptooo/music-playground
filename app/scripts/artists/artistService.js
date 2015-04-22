@@ -1,37 +1,43 @@
 function artistService($http, $q, apiUrl) {
 
-  return {
-    getArtists: function () {
-      var deffer = $q.defer();
+  function _getArtists() {
+    var deffer = $q.defer();
 
-      $http({
-        method: 'GET',
-        url: apiUrl + '/artists.json'
-      }).success(function (data) {
-        var artists = [];
+    $http.get(apiUrl + '/artists.json')
+      .then(function(response) {
+        var data = response.data,
+          artists = [];
+
         for (var i in data) {
           artists.push({
             name: data[i],
             label: i
           });
         }
-        return deffer.resolve(artists);
-      }).error(function () {
-        return deffer.error(new Error('Error, no data.'));
+
+        deffer.resolve(artists);
+      }, function() {
+        deffer.error(new Error('Error, no data.'));
       });
-      return deffer.promise;
-    },
-    getArtistByName: function (name) {
-      return this.getArtists()
-        .then(function (data) {
-          var dataLen = data.length;
-          for (var i = 0; i < dataLen; i++) {
-            if (data[i].label == name) {
-              return data[i];
-            }
+
+    return deffer.promise;
+  }
+
+  function _getArtistByName(name) {
+    return this.getArtists()
+      .then(function (data) {
+        var dataLen = data.length;
+        for (var i = 0; i < dataLen; i++) {
+          if (data[i].label == name) {
+            return data[i];
           }
-        });
-    }
+        }
+      });
+  }
+
+  return {
+    getArtists: _getArtists,
+    getArtistByName: _getArtistByName
   };
 }
 

@@ -40,40 +40,42 @@ function albumService($http, $q, apiUrl) {
 module.exports = albumService;
 
 },{}],2:[function(require,module,exports){
-function AlbumsCtrl($scope, albumPromise, $location, albumService, $stateParams, $rootScope) {
+function AlbumsCtrl(albumPromise, albumService) {
   var albums = this;
 
   albums.items = albumPromise;
-  albums.artist = $stateParams.artist;
+  albums.getGenre = _getGenre;
 
-  this.setCurrentAlbum = function (album) {
-    $rootScope.currentAlbum = album;
-    $rootScope.tracksHead = {
-      title: album.name,
-      artist: $scope.currentArtist.name
-    }
-  };
+  //albums.updateCurrentAlbum = _updateCurrentAlbum;
+  //
+  //function _updateCurrentAlbum(album) {
+  //  $rootScope.currentAlbum = album;
+  //  $rootScope.tracksHead = {
+  //    title: album.name,
+  //    artist: $scope.currentArtist.name
+  //  }
+  //}
 
-  $rootScope.$watch('currentAlbumName', function (value) {
-    var dataLen = albums.items.length;
-    if (!value || !dataLen) {
-      return true;
-    }
-    for (var i = 0; i < dataLen; i++) {
-      if (albums.items[i].label == value) {
-        albums.setCurrentAlbum(albums.items[i]);
-        break;
-      }
-    }
-  });
+  //$rootScope.$watch('currentAlbumName', function (value) {
+  //  var dataLen = albums.items.length;
+  //  if (!value || !dataLen) {
+  //    return true;
+  //  }
+  //  for (var i = 0; i < dataLen; i++) {
+  //    if (albums.items[i].label == value) {
+  //      albums.setCurrentAlbum(albums.items[i]);
+  //      break;
+  //    }
+  //  }
+  //});
 
-  if ($stateParams.artist) {
-    $rootScope.currentArtistName = $stateParams.artist;
-  }
+  //if ($stateParams.artist) {
+  //  $rootScope.currentArtistName = $stateParams.artist;
+  //}
 
-  $scope.getAlbumGenre = function (album) {
+  function _getGenre(album) {
     return albumService.getGenre(album);
-  };
+  }
 }
 
 module.exports = AlbumsCtrl;
@@ -84,12 +86,20 @@ function config($stateProvider) {
     url: 'albums/:artist',
     templateUrl: 'scripts/albums/albums.tpl.html',
     resolve: {
+      currentArtist: function($stateParams, artistService) {
+        if($stateParams.artist) {
+          return artistService.getArtistByName($stateParams.artist);
+        }
+      },
       albumPromise: function ($stateParams, albumService) {
         return albumService.getAlbumsForArtist($stateParams.artist)
           .then(function (data) {
             return data;
           });
       }
+    },
+    onEnter: function(currentArtist, $rootScope) {
+      $rootScope.currentArtist = currentArtist;
     },
     controller: 'AlbumsCtrl as albums'
   })
@@ -108,66 +118,54 @@ module.exports = 'albums';
 },{"./albumService":1,"./albums":2,"./config":3}],5:[function(require,module,exports){
 function artistService($http, $q, apiUrl) {
 
-  return {
-    getArtists: function () {
-      var deffer = $q.defer();
+  function _getArtists() {
+    var deffer = $q.defer();
 
-      $http({
-        method: 'GET',
-        url: apiUrl + '/artists.json'
-      }).success(function (data) {
-        var artists = [];
+    $http.get(apiUrl + '/artists.json')
+      .then(function(response) {
+        var data = response.data,
+          artists = [];
+
         for (var i in data) {
           artists.push({
             name: data[i],
             label: i
           });
         }
-        return deffer.resolve(artists);
-      }).error(function () {
-        return deffer.error(new Error('Error, no data.'));
+
+        deffer.resolve(artists);
+      }, function() {
+        deffer.error(new Error('Error, no data.'));
       });
-      return deffer.promise;
-    },
-    getArtistByName: function (name) {
-      return this.getArtists()
-        .then(function (data) {
-          var dataLen = data.length;
-          for (var i = 0; i < dataLen; i++) {
-            if (data[i].label == name) {
-              return data[i];
-            }
+
+    return deffer.promise;
+  }
+
+  function _getArtistByName(name) {
+    return this.getArtists()
+      .then(function (data) {
+        var dataLen = data.length;
+        for (var i = 0; i < dataLen; i++) {
+          if (data[i].label == name) {
+            return data[i];
           }
-        });
-    }
+        }
+      });
+  }
+
+  return {
+    getArtists: _getArtists,
+    getArtistByName: _getArtistByName
   };
 }
 
 module.exports = artistService;
 
 },{}],6:[function(require,module,exports){
-function ArtistsCtrl(artistPromise, $rootScope) {
+function ArtistsCtrl(artistPromise) {
   var artists = this;
 
   artists.items = artistPromise;
-  artists.updateCurrentArtist = _updateCurrentArtist;
-
-  function _updateCurrentArtist(artist) {
-    $rootScope.currentArtist = artist;
-  }
-
-  //$rootScope.$watch('currentArtistName', function (value) {
-  //  var dataLen = artists.items.length;
-  //  if (!value || !dataLen) {
-  //    return true;
-  //  }
-  //  for (var i = 0; i < dataLen; i++) {
-  //    if (artists.items[i].label == value) {
-  //      $rootScope.currentArtist = artists.items[i];
-  //      break;
-  //    }
-  //  }
-  //});
 }
 
 module.exports = ArtistsCtrl;
@@ -200,44 +198,33 @@ angular.module('artists', [])
 module.exports = 'artists';
 
 },{"./artistService":5,"./artists":6,"./config":7}],9:[function(require,module,exports){
-module.exports = function ($scope, tracksPromise, albumPromise, trackService, playlistService, $rootScope, $stateParams, $location) {
-  $scope.tracks = tracksPromise;
+module.exports = function ($scope, playlistService, trackService, $location) {
+  $scope.tracks = playlistService.getTracks();
+  $scope.listShown = false;
+
+  playlistService.onUpdate(function () {
+    $scope.tracks = playlistService.getTracks();
+  });
 
   $scope.playSong = function (track) {
     trackService.setCurrentTrack(track);
-    playlistService.addTrack(track);
     $location.path(trackService.getTrackRoute(track));
   };
 
-  $scope.addToPlaylist = function (track) {
-    playlistService.addTrack(track);
+  $scope.removeTrack = function (track) {
+    playlistService.removeTrack(track);
   };
 
-  $rootScope.$watch('currentTrackName', function (value) {
-    var tracksLen = $scope.tracks.length;
-    if (!value || !tracksLen) {
-      return true;
-    }
-    for (var i = 0; i < tracksLen; i++) {
-      var track = $scope.tracks[i];
-      if (track.label == value) {
-        trackService.setCurrentTrack(track);
-        if ($rootScope.deepLinkTrack) {
-          playlistService.addTrack(track);
-          $rootScope.deepLinkTrack = false;
-        }
-        break;
-      }
-    }
-  })
+  $scope.toggleList = function () {
+    $scope.listShown = !$scope.listShown;
+  };
 
-  if ($stateParams.album) {
-    $rootScope.currentAlbumName = $stateParams.album;
-  }
+  $scope.previous = function () {
+    playlistService.previous();
+  };
 
-  $scope.stopSong = function () {
-    $rootScope.trackPath = '';
-    $rootScope.trackSelected = '';
+  $scope.next = function () {
+    playlistService.next();
   };
 };
 },{}],10:[function(require,module,exports){
@@ -247,24 +234,22 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
 
   // Route configuration
   $stateProvider
-    .state('artists.albums.tracks', {
-      url: '/tracks/:album',
-      templateUrl: 'views/tracks.html',
+    .state('artists.albums.tracks.listen', {
+      url: '/listen/:track',
       resolve: {
-        tracksPromise: function ($stateParams, trackService) {
+        currentTrack: function($stateParams, trackService) {
           return trackService.getTracksForAlbum($stateParams.album)
-            .then(function (data) {
-              return data;
+            .then(function() {
+              return trackService.getTrackByLabel($stateParams.track);
             });
         }
       },
-      controller: 'Tracks'
-    })
-    .state('artists.albums.tracks.listen', {
-      url: '/listen/:track',
-      controller: function ($rootScope, $stateParams) {
+      onEnter: function(currentTrack, $rootScope) {
+        $rootScope.currentTrack = currentTrack;
+      },
+      controller: function ($rootScope, currentTrack, trackService) {
         $rootScope.deepLinkTrack = true;
-        $rootScope.currentTrackName = $stateParams.track;
+        trackService.setCurrentTrack(currentTrack);
       }
     })
 };
@@ -309,16 +294,16 @@ var app = angular.module('music-playground', [
   require('angular-animate'),
   require('angular-ui-router'),
   require('./artists'),
-  require('./albums')
+  require('./albums'),
+  require('./tracks')
 ]).config(routes)
   .constant('apiUrl', '/api');
 
 // Services
 app.service('playlistService', require('./services/playlistService'));
-app.service('trackService', require('./services/trackService'));
 
 // Controllers
-app.controller('Tracks', require('./controllers/tracks'));
+app.controller('Playlist', require('./controllers/playlist'));
 
 // Filters
 app.filter('startFrom', require('./filters/startFrom'));
@@ -327,7 +312,7 @@ app.filter('startFrom', require('./filters/startFrom'));
 app.directive('audioPlayer', require('./directives/audioPlayer'));
 app.directive('returnTop', require('./directives/returnTop'));
 
-},{"./albums":4,"./artists":8,"./controllers/tracks":9,"./core/routes":10,"./directives/audioPlayer":11,"./directives/returnTop":12,"./filters/startFrom":13,"./services/playlistService":15,"./services/trackService":16,"angular":21,"angular-animate":18,"angular-ui-router":19}],15:[function(require,module,exports){
+},{"./albums":4,"./artists":8,"./controllers/playlist":9,"./core/routes":10,"./directives/audioPlayer":11,"./directives/returnTop":12,"./filters/startFrom":13,"./services/playlistService":15,"./tracks":17,"angular":24,"angular-animate":21,"angular-ui-router":22}],15:[function(require,module,exports){
 module.exports = function (trackService, $rootScope) {
   var tracks = [], tracksClone = [], cbs = [];
 
@@ -406,9 +391,45 @@ module.exports = function (trackService, $rootScope) {
   return playlistService;
 };
 },{}],16:[function(require,module,exports){
-module.exports = function ($http, $q, $stateParams, $rootScope, apiUrl) {
+function config($stateProvider) {
+  $stateProvider.state('artists.albums.tracks', {
+    url: '/tracks/:album',
+    templateUrl: 'scripts/tracks/tracks.tpl.html',
+    resolve: {
+      currentAlbum: function($stateParams, albumService) {
+        if($stateParams.album) {
+          return albumService.getAlbumByName($stateParams.album, $stateParams.artist);
+        }
+      },
+      tracksPromise: function ($stateParams, trackService) {
+        return trackService.getTracksForAlbum($stateParams.album)
+          .then(function (data) {
+            return data;
+          });
+      }
+    },
+    onEnter: function(currentAlbum, $rootScope) {
+      $rootScope.currentAlbum = currentAlbum;
+    },
+    controller: 'TracksCtrl as tracks'
+  });
+}
+
+module.exports = config;
+
+},{}],17:[function(require,module,exports){
+angular.module('tracks', [])
+  .controller('TracksCtrl', require('./tracks'))
+  .service('trackService', require('./trackService'))
+  .config(require('./config'));
+
+module.exports = 'tracks';
+
+},{"./config":16,"./trackService":18,"./tracks":19}],18:[function(require,module,exports){
+function trackService($http, $q, $stateParams, $rootScope, apiUrl) {
   apiUrl += '/tracks/';
-  var trackBaseUrl = '/track/?path=';
+  var trackBaseUrl = '/track/?path=',
+    _currentTracks;
 
   return {
     getTrackRoute: function (track) {
@@ -417,20 +438,35 @@ module.exports = function ($http, $q, $stateParams, $rootScope, apiUrl) {
 
     getTracksForAlbum: function (name) {
       var deffer = $q.defer();
+
       $http({
         method: 'GET',
         url: apiUrl + name + '.json'
       }).success(function (data) {
         var tracks = [];
+
         for (var i in data) {
           data[i].label = i;
           tracks.push(data[i]);
         }
+
+        _currentTracks = tracks;
+
         return deffer.resolve(tracks);
       }).error(function () {
         return deffer.error(new Error('Error, no data.'));
-      })
+      });
+
       return deffer.promise;
+    },
+
+    getTrackByLabel: function (label) {
+      for (var i = 0, len = _currentTracks.length; i < len; i++) {
+        var track = _currentTracks[i];
+        if(track.label === label) {
+          return track;
+        }
+      }
     },
 
     getTrackPath: function (track) {
@@ -441,14 +477,26 @@ module.exports = function ($http, $q, $stateParams, $rootScope, apiUrl) {
       $rootScope.trackPath = this.getTrackPath(track);
       $rootScope.trackSelected = track.path;
       $rootScope.trackUri = this.getTrackRoute(track);
-      $rootScope.currentTrack = {
-        title: track.title,
-        artist: $rootScope.currentArtist.name
-      };
     }
   }
-};
-},{}],17:[function(require,module,exports){
+}
+
+module.exports = trackService;
+
+},{}],19:[function(require,module,exports){
+function TracksCtrl($scope, tracksPromise, playlistService) {
+  var tracks = this;
+
+  tracks.items = tracksPromise;
+
+  $scope.addToPlaylist = function (track) {
+    playlistService.addTrack(track);
+  };
+}
+
+module.exports = TracksCtrl;
+
+},{}],20:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -2587,11 +2635,11 @@ angular.module('ngAnimate', ['ng'])
 
 })(window, window.angular);
 
-},{}],18:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 require('./angular-animate');
 module.exports = 'ngAnimate';
 
-},{"./angular-animate":17}],19:[function(require,module,exports){
+},{"./angular-animate":20}],22:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.2.13
@@ -6824,7 +6872,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],20:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -33134,8 +33182,8 @@ var minlengthDirective = function() {
 })(window, document);
 
 !window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
-},{}],21:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":20}]},{},[14]);
+},{"./angular":23}]},{},[14]);

@@ -1,6 +1,7 @@
-module.exports = function ($http, $q, $stateParams, $rootScope, apiUrl) {
+function trackService($http, $q, $stateParams, $rootScope, apiUrl) {
   apiUrl += '/tracks/';
-  var trackBaseUrl = '/track/?path=';
+  var trackBaseUrl = '/track/?path=',
+    _currentTracks;
 
   return {
     getTrackRoute: function (track) {
@@ -9,20 +10,35 @@ module.exports = function ($http, $q, $stateParams, $rootScope, apiUrl) {
 
     getTracksForAlbum: function (name) {
       var deffer = $q.defer();
+
       $http({
         method: 'GET',
         url: apiUrl + name + '.json'
       }).success(function (data) {
         var tracks = [];
+
         for (var i in data) {
           data[i].label = i;
           tracks.push(data[i]);
         }
+
+        _currentTracks = tracks;
+
         return deffer.resolve(tracks);
       }).error(function () {
         return deffer.error(new Error('Error, no data.'));
-      })
+      });
+
       return deffer.promise;
+    },
+
+    getTrackByLabel: function (label) {
+      for (var i = 0, len = _currentTracks.length; i < len; i++) {
+        var track = _currentTracks[i];
+        if(track.label === label) {
+          return track;
+        }
+      }
     },
 
     getTrackPath: function (track) {
@@ -33,10 +49,8 @@ module.exports = function ($http, $q, $stateParams, $rootScope, apiUrl) {
       $rootScope.trackPath = this.getTrackPath(track);
       $rootScope.trackSelected = track.path;
       $rootScope.trackUri = this.getTrackRoute(track);
-      $rootScope.currentTrack = {
-        title: track.title,
-        artist: $rootScope.currentArtist.name
-      };
     }
   }
-};
+}
+
+module.exports = trackService;

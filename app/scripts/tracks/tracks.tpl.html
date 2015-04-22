@@ -1,0 +1,33 @@
+<div class="col-md-4 slide-right">
+
+  <h2>- {{currentAlbum.name}} -</h2>
+  <h3>by {{currentArtist.name}}</h3>
+
+  <table class="table table-hover table-responsive">
+    <tr ng-repeat="(i, track) in tracks.items | orderBy:'track.no'"
+        ng-class="{ 'success': trackSelected == track.path }"
+      >
+      <td><span class="text-ellipsis pull-left">{{track.track.no || i + 1}} - {{track.title}}</span>
+      </td>
+      <td>
+        <a href
+           ui-sref="artists.albums.tracks.listen({
+            track: track.label
+           })"
+           type="button" class="btn btn-default btn-sm pull-right return-top">
+          Ecouter
+        </a>
+        <!--<button type="button" ng-click="tracks.addToPlaylist(track)" class="btn btn-default btn-sm pull-right">
+          Lire après
+        </button>-->
+        <button type="button" ng-if="trackSelected == track.path"
+                ng-click="tracks.stopSong()"
+                class="btn btn-default btn-sm pull-right slide-left"
+          >Arrêter
+        </button>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div ui-view=""></div>

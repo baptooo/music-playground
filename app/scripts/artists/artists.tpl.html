@@ -1,11 +1,10 @@
 <div class="col-md-3">
   <div class="form-group">
     <input type="text" ng-model="nameFilter"
-       ng-change="onChange()"
-       ng-model-options="{ debounce: 350 }"
-       class="form-control"
-       placeholder="Chercher par nom"
-    />
+           ng-model-options="{ debounce: 350 }"
+           class="form-control"
+           placeholder="Chercher par nom"
+      />
   </div>
   <ul class="list-unstyled actionList">
     <li ng-repeat="artist in artists.items | filter:nameFilter | orderBy:'name' track by $index"
@@ -13,7 +12,7 @@
       ><span class="text">{{artist.name}}</span>
       <a href ui-sref="artists.albums({
         artist: artist.label
-      })" ng-click="artists.updateCurrentArtist(artist)" type="button" class="btn btn-default btn-sm pull-right return-top">
+      })" type="button" class="btn btn-default btn-sm pull-right return-top">
         Voir les albums
       </a>
     </li>

@@ -5,16 +5,16 @@ var app = angular.module('music-playground', [
   require('angular-animate'),
   require('angular-ui-router'),
   require('./artists'),
-  require('./albums')
+  require('./albums'),
+  require('./tracks')
 ]).config(routes)
   .constant('apiUrl', '/api');
 
 // Services
 app.service('playlistService', require('./services/playlistService'));
-app.service('trackService', require('./services/trackService'));
 
 // Controllers
-app.controller('Tracks', require('./controllers/tracks'));
+app.controller('Playlist', require('./controllers/playlist'));
 
 // Filters
 app.filter('startFrom', require('./filters/startFrom'));

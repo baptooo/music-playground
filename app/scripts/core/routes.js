@@ -4,24 +4,22 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
 
   // Route configuration
   $stateProvider
-    .state('artists.albums.tracks', {
-      url: '/tracks/:album',
-      templateUrl: 'views/tracks.html',
+    .state('artists.albums.tracks.listen', {
+      url: '/listen/:track',
       resolve: {
-        tracksPromise: function ($stateParams, trackService) {
+        currentTrack: function($stateParams, trackService) {
           return trackService.getTracksForAlbum($stateParams.album)
-            .then(function (data) {
-              return data;
+            .then(function() {
+              return trackService.getTrackByLabel($stateParams.track);
             });
         }
       },
-      controller: 'Tracks'
-    })
-    .state('artists.albums.tracks.listen', {
-      url: '/listen/:track',
-      controller: function ($rootScope, $stateParams) {
+      onEnter: function(currentTrack, $rootScope) {
+        $rootScope.currentTrack = currentTrack;
+      },
+      controller: function ($rootScope, currentTrack, trackService) {
         $rootScope.deepLinkTrack = true;
-        $rootScope.currentTrackName = $stateParams.track;
+        trackService.setCurrentTrack(currentTrack);
       }
     })
 };
