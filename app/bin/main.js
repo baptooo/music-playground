@@ -285,7 +285,9 @@ function config($stateProvider) {
         }
       },
       onEnter: function (currentTrack, $rootScope) {
-        $rootScope.currentTrack = currentTrack;
+        $rootScope.currentTrack = angular.extend(currentTrack, {
+          artist: $rootScope.currentArtist.name
+        });
       },
       controller: function ($rootScope, currentTrack, trackService) {
         $rootScope.deepLinkTrack = true;
@@ -532,26 +534,37 @@ function trackService($http, $q, $stateParams, $rootScope, apiUrl) {
     $rootScope.trackUri = _getTrackRoute(track);
   }
 
+  function _resetCurrentTrack() {
+    $rootScope.trackPath = null;
+    $rootScope.trackSelected = null;
+    $rootScope.trackUri = null;
+  }
+
   return {
     getTracksForAlbum: _getTracksForAlbum,
     getTrackByLabel: _getTrackByLabel,
     getTrackPath: _getTrackPath,
     getTrackRoute: _getTrackRoute,
-    setCurrentTrack: _setCurrentTrack
+    setCurrentTrack: _setCurrentTrack,
+    resetCurrentTrack: _resetCurrentTrack
   }
 }
 
 module.exports = trackService;
 
 },{}],24:[function(require,module,exports){
-function TracksCtrl($scope, tracksPromise, playlistService) {
+function TracksCtrl(tracksPromise, playlistService, trackService) {
   var tracks = this;
 
   tracks.items = tracksPromise;
 
-  $scope.addToPlaylist = function (track) {
+  tracks.addToPlaylist = function (track) {
     playlistService.addTrack(track);
   };
+
+  tracks.stopSong = function() {
+    trackService.resetCurrentTrack();
+  }
 }
 
 module.exports = TracksCtrl;

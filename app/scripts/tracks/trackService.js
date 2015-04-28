@@ -50,12 +50,19 @@ function trackService($http, $q, $stateParams, $rootScope, apiUrl) {
     $rootScope.trackUri = _getTrackRoute(track);
   }
 
+  function _resetCurrentTrack() {
+    $rootScope.trackPath = null;
+    $rootScope.trackSelected = null;
+    $rootScope.trackUri = null;
+  }
+
   return {
     getTracksForAlbum: _getTracksForAlbum,
     getTrackByLabel: _getTrackByLabel,
     getTrackPath: _getTrackPath,
     getTrackRoute: _getTrackRoute,
-    setCurrentTrack: _setCurrentTrack
+    setCurrentTrack: _setCurrentTrack,
+    resetCurrentTrack: _resetCurrentTrack
   }
 }
 

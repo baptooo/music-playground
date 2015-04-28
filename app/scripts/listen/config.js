@@ -12,7 +12,9 @@ function config($stateProvider) {
         }
       },
       onEnter: function (currentTrack, $rootScope) {
-        $rootScope.currentTrack = currentTrack;
+        $rootScope.currentTrack = angular.extend(currentTrack, {
+          artist: $rootScope.currentArtist.name
+        });
       },
       controller: function ($rootScope, currentTrack, trackService) {
         $rootScope.deepLinkTrack = true;
