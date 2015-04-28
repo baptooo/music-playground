@@ -1,0 +1,27 @@
+<section id="playlist" ng-controller="PlaylistCtrl as playlist">
+  <button type="button" ng-click="playlist.next()" class="btn btn-default btn-sm pull-right return-top">
+    Next
+  </button>
+  <button type="button" ng-click="playlist.previous()" class="btn btn-default btn-sm pull-right return-top">
+    Previous
+  </button>
+  <button type="button" ng-click="playlist.toggleList()" class="btn btn-default btn-sm pull-right return-top">
+    {{playlist.listShown ? 'Close' : 'Open'}}
+  </button>
+  <table class="table table-hover table-responsive" class="push-top" ng-show="playlist.listShown">
+    <tr ng-repeat="track in playlist.tracks track by $index"
+        ng-class="{ 'success': trackSelected == track.path }"
+      >
+      <td><span class="text-ellipsis pull-left">{{$index + 1}} - {{track.title}}</span>
+      </td>
+      <td>
+        <button type="button" ng-click="playlist.removeTrack(track)" class="btn btn-default btn-sm pull-right return-top">
+          Supprimer
+        </button>
+        <button type="button" ng-click="playlist.playSong(track)" class="btn btn-default btn-sm pull-right return-top">
+          Ecouter
+        </button>
+      </td>
+    </tr>
+  </table>
+</section>

@@ -1,4 +1,4 @@
-module.exports = function () {
+function returnTop() {
   return {
     restrict: 'C',
     link: function (scope, element) {
@@ -10,4 +10,6 @@ module.exports = function () {
       });
     }
   }
-};
+}
+
+module.exports = returnTop;

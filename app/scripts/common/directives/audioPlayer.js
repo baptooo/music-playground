@@ -1,4 +1,4 @@
-module.exports = function (playlistService) {
+function audioPlayer(playlistService) {
   return {
     restrict: 'A',
     link: function (scope, element, attrs) {
@@ -7,4 +7,6 @@ module.exports = function (playlistService) {
       });
     }
   }
-};
+}
+
+module.exports = audioPlayer;

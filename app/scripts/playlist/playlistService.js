@@ -1,4 +1,4 @@
-module.exports = function (trackService, $rootScope) {
+function playlistService(trackService, $rootScope) {
   var tracks = [], tracksClone = [], cbs = [];
 
   function notifyUpdate() {
@@ -74,4 +74,6 @@ module.exports = function (trackService, $rootScope) {
     }
   };
   return playlistService;
-};
+}
+
+module.exports = playlistService;

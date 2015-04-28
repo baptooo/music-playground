@@ -11,31 +11,5 @@
   </ul>
   <a href="/#/" class="btn btn-default btn-sm pull-right">Réinitialiser</a>
 
-  <section id="playlist" ng-controller="Playlist">
-    <button type="button" ng-click="next()" class="btn btn-default btn-sm pull-right return-top">
-      Next
-    </button>
-    <button type="button" ng-click="previous()" class="btn btn-default btn-sm pull-right return-top">
-      Previous
-    </button>
-    <button type="button" ng-click="toggleList()" class="btn btn-default btn-sm pull-right return-top">
-      {{listShown ? 'Close' : 'Open'}}
-    </button>
-    <table class="table table-hover table-responsive" class="push-top" ng-show="listShown">
-      <tr ng-repeat="(i, track) in tracks"
-          ng-class="{ 'success': trackSelected == track.path }"
-        >
-        <td><span class="text-ellipsis pull-left">{{i + 1}} - {{track.title}}</span>
-        </td>
-        <td>
-          <button type="button" ng-click="removeTrack(track)" class="btn btn-default btn-sm pull-right return-top">
-            Supprimer
-          </button>
-          <button type="button" ng-click="playSong(track)" class="btn btn-default btn-sm pull-right return-top">
-            Ecouter
-          </button>
-        </td>
-      </tr>
-    </table>
-  </section>
+  <div ng-include="'scripts/playlist/playlist.tpl.html'"></div>
 </div>
