@@ -209,6 +209,43 @@ angular.module('artists', [])
 module.exports = 'artists';
 
 },{"./artistService":5,"./artists":6,"./config":7}],9:[function(require,module,exports){
+'use strict';
+
+function albumPicture() {
+  return {
+    restrict: 'A',
+    scope: {
+
+    },
+    link: function(scope, elt, attrs) {
+      var picturePath = attrs['albumPicture'],
+        lazyImg = document.createElement('img');
+
+      function _clean() {
+        lazyImg.onload = lazyImg.onerror = null;
+        document.body.removeChild(lazyImg);
+      }
+
+      lazyImg.onload = function() {
+        elt.attr('src', picturePath);
+        _clean();
+      };
+      lazyImg.onerror = function() {
+        elt.attr('src', '/assets/album-placeholder.jpg');
+        _clean();
+      };
+
+      lazyImg.src = picturePath;
+      lazyImg.style.width = lazyImg.style.height = '1px';
+
+      document.body.appendChild(lazyImg);
+    }
+  }
+}
+
+module.exports = albumPicture;
+
+},{}],10:[function(require,module,exports){
 function audioPlayer(playlistService) {
   return {
     restrict: 'A',
@@ -222,14 +259,15 @@ function audioPlayer(playlistService) {
 
 module.exports = audioPlayer;
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 angular.module('common.directives', [])
   .directive('audioPlayer', require('./audioPlayer'))
-  .directive('returnTop', require('./returnTop'));
+  .directive('returnTop', require('./returnTop'))
+  .directive('albumPicture', require('./albumPicture'));
 
 module.exports = 'common.directives';
 
-},{"./audioPlayer":9,"./returnTop":11}],11:[function(require,module,exports){
+},{"./albumPicture":9,"./audioPlayer":10,"./returnTop":12}],12:[function(require,module,exports){
 function returnTop() {
   return {
     restrict: 'C',
@@ -246,13 +284,13 @@ function returnTop() {
 
 module.exports = returnTop;
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 angular.module('common.filters', [])
   .filter('startFrom', require('./startFrom'));
 
 module.exports = 'common.filters';
 
-},{"./startFrom":13}],13:[function(require,module,exports){
+},{"./startFrom":14}],14:[function(require,module,exports){
 function startFrom() {
   return function (input, start) {
     start = +start; //parse to int
@@ -262,7 +300,7 @@ function startFrom() {
 
 module.exports = startFrom;
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 function config($urlRouterProvider) {
   // Default Route is home
   $urlRouterProvider.otherwise('/');
@@ -270,7 +308,7 @@ function config($urlRouterProvider) {
 
 module.exports = config;
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 function config($stateProvider) {
   // Route configuration
   $stateProvider
@@ -298,13 +336,13 @@ function config($stateProvider) {
 
 module.exports = config;
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 angular.module('listen', [])
   .config(require('./config'));
 
 module.exports = 'listen';
 
-},{"./config":15}],17:[function(require,module,exports){
+},{"./config":16}],18:[function(require,module,exports){
 var angular = require('angular'),
   config = require('./core/config');
 
@@ -321,14 +359,14 @@ var app = angular.module('music-playground', [
 ]).config(config)
   .constant('apiUrl', '/api');
 
-},{"./albums":4,"./artists":8,"./common/directives":10,"./common/filters":12,"./core/config":14,"./listen":16,"./playlist":18,"./tracks":22,"angular":29,"angular-animate":26,"angular-ui-router":27}],18:[function(require,module,exports){
+},{"./albums":4,"./artists":8,"./common/directives":11,"./common/filters":13,"./core/config":15,"./listen":17,"./playlist":19,"./tracks":23,"angular":30,"angular-animate":27,"angular-ui-router":28}],19:[function(require,module,exports){
 angular.module('playlist', [])
   .controller('PlaylistCtrl', require('./playlist'))
   .service('playlistService', require('./playlistService'));
 
 module.exports = 'playlist';
 
-},{"./playlist":19,"./playlistService":20}],19:[function(require,module,exports){
+},{"./playlist":20,"./playlistService":21}],20:[function(require,module,exports){
 function PlaylistCtrl(playlistService, trackService, $location, $state) {
   var playlist = this;
 
@@ -365,7 +403,7 @@ function PlaylistCtrl(playlistService, trackService, $location, $state) {
 
 module.exports = PlaylistCtrl;
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 function playlistService(trackService, $rootScope) {
   var tracks = [], tracksClone = [], cbs = [];
 
@@ -446,7 +484,7 @@ function playlistService(trackService, $rootScope) {
 
 module.exports = playlistService;
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 function config($stateProvider) {
   $stateProvider.state('artists.albums.tracks', {
     url: '/tracks/:album',
@@ -473,7 +511,7 @@ function config($stateProvider) {
 
 module.exports = config;
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 angular.module('tracks', [])
   .controller('TracksCtrl', require('./tracks'))
   .service('trackService', require('./trackService'))
@@ -481,7 +519,7 @@ angular.module('tracks', [])
 
 module.exports = 'tracks';
 
-},{"./config":21,"./trackService":23,"./tracks":24}],23:[function(require,module,exports){
+},{"./config":22,"./trackService":24,"./tracks":25}],24:[function(require,module,exports){
 function trackService($http, $q, $stateParams, $rootScope, apiUrl) {
   apiUrl += '/tracks/';
   var trackBaseUrl = '/track/?path=',
@@ -552,7 +590,7 @@ function trackService($http, $q, $stateParams, $rootScope, apiUrl) {
 
 module.exports = trackService;
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 function TracksCtrl(tracksPromise, playlistService, trackService) {
   var tracks = this;
 
@@ -569,7 +607,7 @@ function TracksCtrl(tracksPromise, playlistService, trackService) {
 
 module.exports = TracksCtrl;
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -2708,11 +2746,11 @@ angular.module('ngAnimate', ['ng'])
 
 })(window, window.angular);
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 require('./angular-animate');
 module.exports = 'ngAnimate';
 
-},{"./angular-animate":25}],27:[function(require,module,exports){
+},{"./angular-animate":26}],28:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.2.13
@@ -6945,7 +6983,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -33255,8 +33293,8 @@ var minlengthDirective = function() {
 })(window, document);
 
 !window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":28}]},{},[17]);
+},{"./angular":29}]},{},[18]);

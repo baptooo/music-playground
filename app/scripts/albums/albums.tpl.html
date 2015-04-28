@@ -4,17 +4,16 @@
     <li ng-repeat="album in albums.items | orderBy:'year'"
         class="actionList__item actionList__item--album slide-right slide-right-delayed clearfix"
       >
-      <article class="albumInfo pull-left">
-        <img ng-if="album.picture" width="80"
-             ng-src="{{album.picture}}" alt="" class="pull-left"
-          />
 
+      <article class="albumInfo pull-left">
+        <img width="80" data-album-picture="{{album.picture}}" alt="" class="albumInfo__picture pull-left" />
         <h3 class="albumInfo__title text-ellipsis">{{album.name}}</h3>
         <ul class="albumInfo__list list-unstyled">
           <li class="albumInfo__item"><strong>Genre:</strong> {{albums.getGenre(album)}}</li>
           <li class="albumInfo__item"><strong>Année:</strong> {{album.year}}</li>
         </ul>
       </article>
+
       <a href ui-sref="artists.albums.tracks({
         album: album.label
       })" type="button" class="btn btn-default btn-sm pull-right return-top">
