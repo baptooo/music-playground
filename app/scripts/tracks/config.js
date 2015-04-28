@@ -3,8 +3,8 @@ function config($stateProvider) {
     url: '/tracks/:album',
     templateUrl: 'scripts/tracks/tracks.tpl.html',
     resolve: {
-      currentAlbum: function($stateParams, albumService) {
-        if($stateParams.album) {
+      currentAlbum: function ($stateParams, albumService) {
+        if ($stateParams.album) {
           return albumService.getAlbumByName($stateParams.album, $stateParams.artist);
         }
       },
@@ -15,7 +15,7 @@ function config($stateProvider) {
           });
       }
     },
-    onEnter: function(currentAlbum, $rootScope) {
+    onEnter: function (currentAlbum, $rootScope) {
       $rootScope.currentAlbum = currentAlbum;
     },
     controller: 'TracksCtrl as tracks'

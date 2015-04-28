@@ -3,22 +3,23 @@ function artistService($http, $q, apiUrl) {
   function _getArtists() {
     var deffer = $q.defer();
 
-    $http.get(apiUrl + '/artists.json')
-      .then(function(response) {
-        var data = response.data,
-          artists = [];
+    $http.get(apiUrl + '/artists.json', {
+      cache: true
+    }).then(function (response) {
+      var data = response.data,
+        artists = [];
 
-        for (var i in data) {
-          artists.push({
-            name: data[i],
-            label: i
-          });
-        }
+      for (var i in data) {
+        artists.push({
+          name: data[i],
+          label: i
+        });
+      }
 
-        deffer.resolve(artists);
-      }, function() {
-        deffer.error(new Error('Error, no data.'));
-      });
+      deffer.resolve(artists);
+    }, function () {
+      deffer.error(new Error('Error, no data.'));
+    });
 
     return deffer.promise;
   }

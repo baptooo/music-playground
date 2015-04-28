@@ -2,38 +2,48 @@
 function albumService($http, $q, apiUrl) {
   apiUrl += '/albums';
 
-  return {
-    getAlbumsForArtist: function (name) {
-      var _t = this, deffer = $q.defer();
-      $http({
-        method: 'GET',
-        url: apiUrl + '/' + name + '.json'
-      }).success(function (data) {
-        var albums = [];
-        for (var i in data) {
-          data[i].label = i;
-          albums.push(data[i]);
-        }
-        return deffer.resolve(albums);
-      }).error(function () {
-        return deffer.error(new Error('Error, no data.'));
-      });
-      return deffer.promise;
-    },
-    getGenre: function (album) {
-      return album.genre.join(',');
-    },
-    getAlbumByName: function (album, artist) {
-      return this.getAlbumsForArtist(artist)
-        .then(function (data) {
-          var dataLen = data.length;
-          for (var i = 0; i < dataLen; i++) {
-            if (data[i].label == album) {
-              return data[i];
-            }
+  function _getAlbumsForArtist(name) {
+    var deffer = $q.defer();
+
+    $http.get(apiUrl + '/' + name + '.json', {
+      cache: true
+    }).then(function (response) {
+      var data = response.data,
+        albums = [];
+
+      for (var i in data) {
+        data[i].label = i;
+        albums.push(data[i]);
+      }
+
+      return deffer.resolve(albums);
+    }, function () {
+      return deffer.error(new Error('Error, no data.'));
+    });
+
+    return deffer.promise;
+  }
+
+  function _getGenre(album) {
+    return album.genre.join(',');
+  }
+
+  function _getAlbumByName(album, artist) {
+    return _getAlbumsForArtist(artist)
+      .then(function (data) {
+        var dataLen = data.length;
+        for (var i = 0; i < dataLen; i++) {
+          if (data[i].label == album) {
+            return data[i];
           }
-        });
-    }
+        }
+      });
+  }
+
+  return {
+    getAlbumsForArtist: _getAlbumsForArtist,
+    getGenre: _getGenre,
+    getAlbumByName: _getAlbumByName
   };
 }
 
@@ -86,8 +96,8 @@ function config($stateProvider) {
     url: 'albums/:artist',
     templateUrl: 'scripts/albums/albums.tpl.html',
     resolve: {
-      currentArtist: function($stateParams, artistService) {
-        if($stateParams.artist) {
+      currentArtist: function ($stateParams, artistService) {
+        if ($stateParams.artist) {
           return artistService.getArtistByName($stateParams.artist);
         }
       },
@@ -98,7 +108,7 @@ function config($stateProvider) {
           });
       }
     },
-    onEnter: function(currentArtist, $rootScope) {
+    onEnter: function (currentArtist, $rootScope) {
       $rootScope.currentArtist = currentArtist;
     },
     controller: 'AlbumsCtrl as albums'
@@ -121,22 +131,23 @@ function artistService($http, $q, apiUrl) {
   function _getArtists() {
     var deffer = $q.defer();
 
-    $http.get(apiUrl + '/artists.json')
-      .then(function(response) {
-        var data = response.data,
-          artists = [];
+    $http.get(apiUrl + '/artists.json', {
+      cache: true
+    }).then(function (response) {
+      var data = response.data,
+        artists = [];
 
-        for (var i in data) {
-          artists.push({
-            name: data[i],
-            label: i
-          });
-        }
+      for (var i in data) {
+        artists.push({
+          name: data[i],
+          label: i
+        });
+      }
 
-        deffer.resolve(artists);
-      }, function() {
-        deffer.error(new Error('Error, no data.'));
-      });
+      deffer.resolve(artists);
+    }, function () {
+      deffer.error(new Error('Error, no data.'));
+    });
 
     return deffer.promise;
   }
@@ -316,7 +327,7 @@ angular.module('playlist', [])
 module.exports = 'playlist';
 
 },{"./playlist":19,"./playlistService":20}],19:[function(require,module,exports){
-function PlaylistCtrl($scope, playlistService, trackService, $location) {
+function PlaylistCtrl(playlistService, trackService, $location, $state) {
   var playlist = this;
 
   playlist.tracks = playlistService.getTracks();
@@ -328,7 +339,9 @@ function PlaylistCtrl($scope, playlistService, trackService, $location) {
 
   playlist.playSong = function (track) {
     trackService.setCurrentTrack(track);
-    $location.path(trackService.getTrackRoute(track));
+    $state.go('artists.albums.tracks.listen', {
+      track: track.label
+    });
   };
 
   playlist.removeTrack = function (track) {
@@ -437,8 +450,8 @@ function config($stateProvider) {
     url: '/tracks/:album',
     templateUrl: 'scripts/tracks/tracks.tpl.html',
     resolve: {
-      currentAlbum: function($stateParams, albumService) {
-        if($stateParams.album) {
+      currentAlbum: function ($stateParams, albumService) {
+        if ($stateParams.album) {
           return albumService.getAlbumByName($stateParams.album, $stateParams.artist);
         }
       },
@@ -449,7 +462,7 @@ function config($stateProvider) {
           });
       }
     },
-    onEnter: function(currentAlbum, $rootScope) {
+    onEnter: function (currentAlbum, $rootScope) {
       $rootScope.currentAlbum = currentAlbum;
     },
     controller: 'TracksCtrl as tracks'
@@ -472,53 +485,59 @@ function trackService($http, $q, $stateParams, $rootScope, apiUrl) {
   var trackBaseUrl = '/track/?path=',
     _currentTracks;
 
-  return {
-    getTrackRoute: function (track) {
-      return '/albums/' + $stateParams.artist + '/tracks/' + $stateParams.album + '/listen/' + track.label;
-    },
+  function _getTracksForAlbum(name) {
+    var deffer = $q.defer();
 
-    getTracksForAlbum: function (name) {
-      var deffer = $q.defer();
+    $http.get(apiUrl + name + '.json', {
+      cache: true
+    }).then(function (response) {
+      var data = response.data,
+        tracks = [];
 
-      $http({
-        method: 'GET',
-        url: apiUrl + name + '.json'
-      }).success(function (data) {
-        var tracks = [];
-
-        for (var i in data) {
-          data[i].label = i;
-          tracks.push(data[i]);
-        }
-
-        _currentTracks = tracks;
-
-        return deffer.resolve(tracks);
-      }).error(function () {
-        return deffer.error(new Error('Error, no data.'));
-      });
-
-      return deffer.promise;
-    },
-
-    getTrackByLabel: function (label) {
-      for (var i = 0, len = _currentTracks.length; i < len; i++) {
-        var track = _currentTracks[i];
-        if(track.label === label) {
-          return track;
-        }
+      for (var i in data) {
+        data[i].label = i;
+        tracks.push(data[i]);
       }
-    },
 
-    getTrackPath: function (track) {
-      return trackBaseUrl + encodeURI(track.path);
-    },
+      _currentTracks = tracks;
 
-    setCurrentTrack: function (track) {
-      $rootScope.trackPath = this.getTrackPath(track);
-      $rootScope.trackSelected = track.path;
-      $rootScope.trackUri = this.getTrackRoute(track);
+      return deffer.resolve(tracks);
+    }, function () {
+      return deffer.error(new Error('Error, no data.'));
+    });
+
+    return deffer.promise;
+  }
+
+  function _getTrackByLabel(label) {
+    for (var i = 0, len = _currentTracks.length; i < len; i++) {
+      var track = _currentTracks[i];
+      if (track.label === label) {
+        return track;
+      }
     }
+  }
+
+  function _getTrackRoute(track) {
+    return '/albums/' + $stateParams.artist + '/tracks/' + $stateParams.album + '/listen/' + track.label;
+  }
+
+  function _getTrackPath(track) {
+    return trackBaseUrl + encodeURI(track.path);
+  }
+
+  function _setCurrentTrack(track) {
+    $rootScope.trackPath = _getTrackPath(track);
+    $rootScope.trackSelected = track.path;
+    $rootScope.trackUri = _getTrackRoute(track);
+  }
+
+  return {
+    getTracksForAlbum: _getTracksForAlbum,
+    getTrackByLabel: _getTrackByLabel,
+    getTrackPath: _getTrackPath,
+    getTrackRoute: _getTrackRoute,
+    setCurrentTrack: _setCurrentTrack
   }
 }
 

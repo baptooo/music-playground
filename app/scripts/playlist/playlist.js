@@ -1,4 +1,4 @@
-function PlaylistCtrl($scope, playlistService, trackService, $location) {
+function PlaylistCtrl(playlistService, trackService, $location, $state) {
   var playlist = this;
 
   playlist.tracks = playlistService.getTracks();
@@ -10,7 +10,9 @@ function PlaylistCtrl($scope, playlistService, trackService, $location) {
 
   playlist.playSong = function (track) {
     trackService.setCurrentTrack(track);
-    $location.path(trackService.getTrackRoute(track));
+    $state.go('artists.albums.tracks.listen', {
+      track: track.label
+    });
   };
 
   playlist.removeTrack = function (track) {
