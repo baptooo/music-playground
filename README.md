@@ -3,7 +3,7 @@
 
 ## Requirements
 
-1. nodejs [http://nodejs.org/download/](nodejs)
+1. nodejs [http://nodejs.org/download/](http://nodejs.org/download/)
 2. bower: "npm install -g bower"
 3. Ruby (2.0+)
 3. Sass (3.3+) "gem install sass"
