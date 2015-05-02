@@ -1,7 +1,12 @@
 function config($stateProvider) {
   $stateProvider.state('artists.albums.tracks', {
     url: '/tracks/:album',
-    templateUrl: 'scripts/tracks/tracks.tpl.html',
+    views: {
+      'tracks@': {
+        templateUrl: 'scripts/tracks/tracks.tpl.html',
+        controller: 'TracksCtrl as tracks'
+      }
+    },
     resolve: {
       currentAlbum: function ($stateParams, albumService) {
         if ($stateParams.album) {
@@ -17,8 +22,7 @@ function config($stateProvider) {
     },
     onEnter: function (currentAlbum, $rootScope) {
       $rootScope.currentAlbum = currentAlbum;
-    },
-    controller: 'TracksCtrl as tracks'
+    }
   });
 }
 

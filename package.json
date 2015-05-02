@@ -6,6 +6,9 @@
   "author": "Baptiste Rios Campo <baptiste.rios@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "angular-aria": "^1.3.15",
+    "angular-material": "^0.8.3",
+    "angular-material-icons": "^0.4.0",
     "btoa": "~1.1.2",
     "grunt": "~0.4.5",
     "grunt-browserify": "^3.7.0",

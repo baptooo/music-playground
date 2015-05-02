@@ -1,34 +1,30 @@
-<div class="col-md-4 slide-right">
+<md-toolbar md-scroll-shrink>
+  <div class="md-toolbar-tools">
+    <h3>
+      <span>{{currentAlbum.name}}</span>
+    </h3>
+  </div>
+</md-toolbar>
 
-  <h2>- {{currentAlbum.name}} -</h2>
+<md-list>
+  <md-item ng-repeat="track in tracks.items | orderBy:(track.no || $index) track by $index">
+    <div layout="row">
+      <md-item-content flex class="hover-tile" aria-label="track information" ng-click="tracks.toggleTrack(track)">
+        <div class="md-tile-left">
+          <md-button class="md-icon-button md-primary" aria-label="play track">
+            <ng-md-icon ng-attr-icon="{{trackSelected === track.path ? 'stop' : 'play_arrow'}}"></ng-md-icon>
+          </md-button>
+        </div>
+        <div class="md-tile-content">
+          {{track.title}}
+        </div>
+      </md-item-content>
+      <md-button class="md-icon-button md-primary" ng-click="tracks.addToPlaylist(track)" aria-label="add to playlist">
+        <ng-md-icon icon="add"></ng-md-icon>
+      </md-button>
+    </div>
 
-  <h3>by {{currentArtist.name}}</h3>
 
-  <table class="table table-hover table-responsive">
-    <tr ng-repeat="(i, track) in tracks.items | orderBy:'track.no'"
-        ng-class="{ 'success': trackSelected == track.path }"
-      >
-      <td><span class="text-ellipsis pull-left">{{track.track.no || i + 1}} - {{track.title}}</span>
-      </td>
-      <td>
-        <a href
-           ui-sref="artists.albums.tracks.listen({
-            track: track.label
-           })"
-           type="button" class="btn btn-default btn-sm pull-right return-top">
-          Ecouter
-        </a>
-        <button type="button" ng-click="tracks.addToPlaylist(track)" class="btn btn-default btn-sm pull-right">
-          Lire après
-        </button>
-        <button type="button" ng-if="trackSelected == track.path"
-                ng-click="tracks.stopSong()"
-                class="btn btn-default btn-sm pull-right slide-left"
-          >Arrêter
-        </button>
-      </td>
-    </tr>
-  </table>
-</div>
-
-<div ui-view=""></div>
+    <md-divider></md-divider>
+  </md-item>
+</md-list>
