@@ -1,4 +1,4 @@
-<div class="player col-md-12 push-top text-center" ng-if="trackPath">
+<!--<div layout="row" class="player push-top text-center" ng-if="trackPath">
   <a href="{{trackPath}}" target="_blank" type="button" class="btn btn-default btn-sm pull-left">Télécharger le
     titre</a>
   <ul class="player__list list-unstyled">
@@ -12,4 +12,22 @@
   <a href="/#/" class="btn btn-default btn-sm pull-right">Réinitialiser</a>
 
   <div ng-include="'scripts/playlist/playlist.tpl.html'"></div>
-</div>
+</div>-->
+
+<md-toolbar class="player push-top" ng-if="trackPath">
+  <div class="md-toolbar-tools">
+    <h2>
+      <span>{{currentTrack.artist}} - {{currentTrack.title}}</span>
+    </h2>
+    <span flex>
+      <audio controls audio-player="" ng-src="{{trackPath}}" autoplay="true"></audio>
+    </span>
+    <md-button href="{{trackPath}}" target="_blank" class="md-icon-button" aria-label="Track path">
+      <ng-md-icon icon="file_download"></ng-md-icon>
+    </md-button>
+    <md-button href="/#{{trackUri}}" class="md-icon-button" aria-label="Share">
+      <ng-md-icon icon="open_in_browser"></ng-md-icon>
+    </md-button>
+  </div>
+  <!--<div ng-include="'scripts/playlist/playlist.tpl.html'"></div>-->
+</md-toolbar>

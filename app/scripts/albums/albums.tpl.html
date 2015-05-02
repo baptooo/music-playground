@@ -1,25 +1,23 @@
-<div class="col-md-5">
-  <h1 class="text-ellipsis">{{currentArtist.name}}</h1>
-  <ul class="list-unstyled actionList">
-    <li ng-repeat="album in albums.items | orderBy:'year'"
-        class="actionList__item actionList__item--album slide-right slide-right-delayed clearfix"
-      >
+<md-toolbar md-scroll-shrink>
+  <div class="md-toolbar-tools">
+    <h3>
+      <span>{{currentArtist.name}}</span>
+    </h3>
+  </div>
+</md-toolbar>
 
-      <article class="albumInfo pull-left">
-        <img width="80" data-album-picture="{{album.picture}}" alt="" class="albumInfo__picture pull-left" />
-        <h3 class="albumInfo__title text-ellipsis">{{album.name}}</h3>
-        <ul class="albumInfo__list list-unstyled">
-          <li class="albumInfo__item"><strong>Genre:</strong> {{albums.getGenre(album)}}</li>
-          <li class="albumInfo__item"><strong>Année:</strong> {{album.year}}</li>
-        </ul>
-      </article>
-
-      <a href ui-sref="artists.albums.tracks({
-        album: album.label
-      })" type="button" class="btn btn-default btn-sm pull-right return-top">
-        Voir les Chansons
-      </a>
-    </li>
-  </ul>
-</div>
-<div ui-view class="slide-right"></div>
+<md-list>
+  <md-item ng-repeat="album in albums.items | orderBy:'year' track by $index">
+    <md-item-content href ui-sref="artists.albums.tracks({album: album.label})"
+                     class="return-top hover-tile" aria-label="show tracks">
+      <div class="md-tile-left">
+        <img data-album-picture="{{album.picture}}" alt="" class="album-info__picture"/>
+      </div>
+      <div class="md-tile-content">
+        <h3>{{album.name}}</h3>
+        <p>{{albums.getGenre(album)}}</p>
+        <p>{{album.year}}</p>
+      </div>
+    </md-item-content>
+  </md-item>
+</md-list>

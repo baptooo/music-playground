@@ -1,4 +1,4 @@
-function TracksCtrl(tracksPromise, playlistService, trackService) {
+function TracksCtrl($rootScope, tracksPromise, playlistService, trackService) {
   var tracks = this;
 
   tracks.items = tracksPromise;
@@ -7,8 +7,20 @@ function TracksCtrl(tracksPromise, playlistService, trackService) {
     playlistService.addTrack(track);
   };
 
-  tracks.stopSong = function() {
+  tracks.play = function(track) {
+    trackService.setCurrentTrack(track);
+  };
+
+  tracks.stop = function() {
     trackService.resetCurrentTrack();
+  };
+
+  tracks.toggleTrack = function(track) {
+    if($rootScope.trackSelected === track.path) {
+      trackService.resetCurrentTrack();
+    } else {
+      trackService.setCurrentTrack(track);
+    }
   }
 }
 

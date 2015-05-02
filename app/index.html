@@ -7,13 +7,18 @@
   <!--<meta http-equiv="Content-Security-Policy" content="img-src 'self' data:"/>-->
 
   <!-- Stylesheets -->
+  <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="node_modules/angular-material/angular-material.css"/>
   <link rel="stylesheet" href="bin/main.css"/>
 </head>
 <body>
   <section class="pageSection" id="home">
     <div ng-include="'scripts/player/player.tpl.html'"></div>
-    <div class="row">
-      <div ui-view></div>
+
+    <div layout="row" layout-padding>
+      <div ui-view="artists" class="slide-right" flex></div>
+      <div ui-view="albums" class="slide-right" flex></div>
+      <div ui-view="tracks" class="slide-right" flex></div>
     </div>
   </section>
 

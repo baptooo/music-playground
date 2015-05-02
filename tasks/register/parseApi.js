@@ -41,7 +41,7 @@ grunt.task.registerTask('parseApi', 'Api automatic parser', function () {
       files.length ? getID3() : parseGlobal();
       stream.destroy();
     });
-  };
+  }
   getID3();
 
   function formatName(name) {
