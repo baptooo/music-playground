@@ -1,5 +1,5 @@
 function config($stateProvider) {
-  $stateProvider.state('artists.albums', {
+  $stateProvider.state('root.artists.albums', {
     url: 'albums/:artist',
     views: {
       'albums@': {

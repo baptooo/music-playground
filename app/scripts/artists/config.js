@@ -1,10 +1,13 @@
 function config($stateProvider) {
-  $stateProvider.state('artists', {
+  $stateProvider.state('root.artists', {
     url: '/',
     views: {
       'artists@': {
         templateUrl: 'scripts/artists/artists.tpl.html',
         controller: 'ArtistsCtrl as artists'
+      },
+      'player@': {
+        templateUrl: 'scripts/player/player.tpl.html'
       }
     },
     resolve: {

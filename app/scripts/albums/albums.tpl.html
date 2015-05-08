@@ -1,14 +1,16 @@
-<md-toolbar md-scroll-shrink>
+<!--<md-toolbar md-scroll-shrink>
   <div class="md-toolbar-tools">
     <h3>
       <span>{{currentArtist.name}}</span>
     </h3>
   </div>
-</md-toolbar>
+</md-toolbar>-->
+
+<h2>{{currentArtist.name}}</h2>
 
 <md-list>
   <md-item ng-repeat="album in albums.items | orderBy:'year' track by $index">
-    <md-item-content href ui-sref="artists.albums.tracks({album: album.label})"
+    <md-item-content href ui-sref="root.artists.albums.tracks({album: album.label})"
                      class="return-top hover-tile" aria-label="show tracks">
       <div class="md-tile-left">
         <img data-album-picture="{{album.picture}}" alt="" class="album-info__picture"/>
