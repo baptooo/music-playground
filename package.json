@@ -14,6 +14,7 @@
     "grunt-contrib-sass": "~0.7.3",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-version": "^0.3.0",
+    "id3_reader": "^1.0.1",
     "musicmetadata": "~0.4.0"
   },
   "dependencies": {

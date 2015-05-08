@@ -1,45 +1,34 @@
 'use strict';
 
 var grunt = require('grunt'),
-  mmd = require('musicmetadata'),
-  fs = require('fs'),
-  btoa = require('btoa');
+  id3Reader = require('id3_reader');
 
-grunt.task.registerTask('parseApi', 'Api automatic parser', function () {
+grunt.task.registerMultiTask('parseApi', 'Api automatic parser', function () {
   var config = grunt.config.get('parseApi'),
     done = this.async(),
-    files = [],
+    files = grunt.file.expand(config.basePath + '/**/*.mp3'),
     global = [],
     artists = {},
     albums = {},
     tracks = {},
     startTime = Date.now();
 
-  grunt.file.recurse(config.basePath, function (abspath) {
-    if (/\.mp3$/.test(abspath)) {
-      files.push(abspath);
-    }
-  });
-
   var totalFiles = files.length, i = 0;
 
   function getID3() {
-    var filepath = files.shift(),
-      stream = fs.createReadStream(filepath),
-      parser = mmd(stream);
+    var filepath = files.shift();
 
     console.log((i++) + '/' + totalFiles + ' done...');
     console.log('Reading ID3 tags for: ' + filepath);
 
-    parser.on('done', function (err) {
-      if (!err && parser.metadata) {
+    id3Reader.read(filepath, function(err, data) {
+      if (!err && data) {
         global.push({
-          id3: parser.metadata,
+          id3: data,
           path: filepath
         });
       }
       files.length ? getID3() : parseGlobal();
-      stream.destroy();
     });
   };
   getID3();
@@ -48,19 +37,18 @@ grunt.task.registerTask('parseApi', 'Api automatic parser', function () {
     return name.toLowerCase().replace(/[^\w+]/gi, '');
   }
 
-  function getPicture(data, formatAlbum) {
-    var image = data[0];
+  function getPicture(image, formatAlbum) {
     if (!image) {
       return '';
     }
 
-    var base64String = "";
-    for (var i = 0; i < image.data.length; i++) {
-      base64String += String.fromCharCode(image.data[i]);
-    }
-    var imageFormat = /\.(jpg|png|gif|bmp)$/i.test(image.format) ? image.format : '.jpg';
-    var path = 'api/pictures/' + formatAlbum + '.' + imageFormat;
-    grunt.file.write(path, btoa(base64String), {
+    //var base64String = "";
+    //for (var i = 0; i < image.data.length; i++) {
+    //  base64String += String.fromCharCode(image.data[i]);
+    //}
+    //var imageFormat = /\.(jpg|png|gif|bmp)$/i.test(image.format) ? image.format : '.jpg';
+    var path = 'api/pictures/' + formatAlbum + '.jpg';
+    grunt.file.write(path, image, {
       encoding: 'base64'
     });
     return path;
@@ -70,7 +58,7 @@ grunt.task.registerTask('parseApi', 'Api automatic parser', function () {
     var len = global.length;
     for (var i = 0; i < len; i++) {
       var id3 = global[i].id3,
-        artist = id3.artist.length == 1 && id3.artist[0];
+        artist = id3.artist;
 
       if (!artist) {
         continue;
@@ -93,7 +81,7 @@ grunt.task.registerTask('parseApi', 'Api automatic parser', function () {
           name: id3.album,
           year: id3.year,
           genre: id3.genre,
-          picture: getPicture(id3.picture, formatAlbum)
+          picture: getPicture(id3.attached_picture, formatAlbum)
         };
       }
 
