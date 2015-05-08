@@ -1,27 +1,9 @@
-<!--<div layout="row" class="player push-top text-center" ng-if="trackPath">
-  <a href="{{trackPath}}" target="_blank" type="button" class="btn btn-default btn-sm pull-left">Télécharger le
-    titre</a>
-  <ul class="player__list list-unstyled">
-    <li>
-      <audio controls audio-player="" ng-src="{{trackPath}}" autoplay="true"></audio>
-    </li>
-    <li>
-      <a href="/#{{trackUri}}">{{currentTrack.artist}} - {{currentTrack.title}}</a>
-    </li>
-  </ul>
-  <a href="/#/" class="btn btn-default btn-sm pull-right">Réinitialiser</a>
-
-  <div ng-include="'scripts/playlist/playlist.tpl.html'"></div>
-</div>-->
-
 <md-toolbar class="player push-top" ng-if="trackPath">
   <div class="md-toolbar-tools">
     <h2>
       <span>{{currentTrack.artist}} - {{currentTrack.title}}</span>
     </h2>
-    <span flex>
-      <audio controls audio-player="" ng-src="{{trackPath}}" autoplay="true"></audio>
-    </span>
+    <mp-audio-player src="trackPath" flex></mp-audio-player>
     <md-button href="{{trackPath}}" target="_blank" class="md-icon-button" aria-label="Track path">
       <ng-md-icon icon="file_download"></ng-md-icon>
     </md-button>

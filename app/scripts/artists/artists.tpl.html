@@ -15,7 +15,7 @@
 <md-list>
   <md-item
     ng-repeat="artist in filteredArtists = (artists.items | filter:artists.nameFilter | orderBy:'name') track by $index">
-    <md-item-content href ui-sref="artists.albums({artist: artist.label})"
+    <md-item-content href ui-sref="root.artists.albums({artist: artist.label})"
                      class="return-top hover-tile hover-tile--animate-left" aria-label="show albums">
       <div class="md-tile-left">
         <ng-md-icon icon="chevron_right"></ng-md-icon>

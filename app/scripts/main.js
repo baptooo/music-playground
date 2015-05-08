@@ -15,6 +15,7 @@ var app = angular.module('music-playground', [
   require('./albums'),
   require('./tracks'),
   require('./playlist'),
-  require('./listen')
+  require('./listen'),
+  require('./audioplayer'),
 ]).config(config)
   .constant('apiUrl', '/api');

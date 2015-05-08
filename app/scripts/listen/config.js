@@ -1,7 +1,7 @@
 function config($stateProvider) {
   // Route configuration
   $stateProvider
-    .state('artists.albums.tracks.listen', {
+    .state('root.artists.albums.tracks.listen', {
       url: '/listen/:track',
       resolve: {
         currentTrack: function ($stateParams, trackService) {
