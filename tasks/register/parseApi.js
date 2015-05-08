@@ -1,7 +1,19 @@
 'use strict';
 
 var grunt = require('grunt'),
-  id3Reader = require('id3_reader');
+  id3Reader = require('id3_reader'),
+  util = require('util');
+
+var log = function(msg)
+{
+  process.stdout.write('parseApi: ');
+  process.stdout.write(util.inspect(msg,
+    {
+      depth: 99,
+      colors: true
+    }));
+  process.stdout.write('\n');
+};
 
 grunt.task.registerMultiTask('parseApi', 'Api automatic parser', function () {
   var config = grunt.config.get('parseApi'),
@@ -18,8 +30,7 @@ grunt.task.registerMultiTask('parseApi', 'Api automatic parser', function () {
   function getID3() {
     var filepath = files.shift();
 
-    console.log((i++) + '/' + totalFiles + ' done...');
-    console.log('Reading ID3 tags for: ' + filepath);
+    log((i++) + '/' + totalFiles + ', ' + filepath);
 
     id3Reader.read(filepath, function(err, data) {
       if (!err && data) {
@@ -30,27 +41,30 @@ grunt.task.registerMultiTask('parseApi', 'Api automatic parser', function () {
       }
       files.length ? getID3() : parseGlobal();
     });
-  };
+  }
   getID3();
 
   function formatName(name) {
     return name.toLowerCase().replace(/[^\w+]/gi, '');
   }
 
-  function getPicture(image, formatAlbum) {
-    if (!image) {
+  function getPicture(data, formatAlbum) {
+    if (!data) {
       return '';
     }
 
-    //var base64String = "";
-    //for (var i = 0; i < image.data.length; i++) {
-    //  base64String += String.fromCharCode(image.data[i]);
-    //}
-    //var imageFormat = /\.(jpg|png|gif|bmp)$/i.test(image.format) ? image.format : '.jpg';
-    var path = 'api/pictures/' + formatAlbum + '.jpg';
-    grunt.file.write(path, image, {
+    var format = data.match(/(jpg|png|gif|bmp)/i);
+    var path = 'api/pictures/' + formatAlbum + '.' + (format && format.length ? format[0].toLowerCase() : 'jpg');
+
+    // Create picture only if no exists
+    if(grunt.file.exists(path)) {
+      return path;
+    }
+
+    grunt.file.write(path, new Buffer(data).toString('base64'), {
       encoding: 'base64'
     });
+
     return path;
   }
 
@@ -110,7 +124,7 @@ grunt.task.registerMultiTask('parseApi', 'Api automatic parser', function () {
 
     var elapsed = (Date.now() - startTime) / 1000;
 
-    console.log('Success, parsing tooks: ' + elapsed + 's');
+    log('Success, parsing tooks: ' + elapsed + 's');
     done();
   }
 });
