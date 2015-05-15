@@ -1,9 +1,11 @@
-<md-toolbar class="player push-top" ng-if="trackPath">
+<md-toolbar class="player push-top" ng-if="trackPath" layout-align="center center" flex>
   <div class="md-toolbar-tools">
     <h2>
       <span>{{currentTrack.artist}} - {{currentTrack.title}}</span>
     </h2>
-    <mp-audio-player src="trackPath" flex></mp-audio-player>
+
+    <mp-audio-player src="trackPath" autoplay="true" flex></mp-audio-player>
+
     <md-button href="{{trackPath}}" target="_blank" class="md-icon-button" aria-label="Track path">
       <ng-md-icon icon="file_download"></ng-md-icon>
     </md-button>

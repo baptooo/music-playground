@@ -1,10 +1,13 @@
-<audio ng-src="{{src}}" autoplay="true"></audio>
+<!--<audio ng-src="{{src}}" autoplay="true"></audio>-->
 
 <div layout="row">
-  <md-button class="md-fab" ng-click="audio.play()" ng-show="audio.paused"></md-button>
-  <md-button class="md-fab" ng-click="audio.pause()" ng-hide="audio.paused"></md-button>
-
-  <!--<md-progress-linear class="md-warn" md-mode="buffer" value="{{determinateValue}}"
-                      md-buffer-value="{{determinateValue2}}">
-  </md-progress-linear>-->
+  <md-button class="md-icon-button" ng-click="playPause()">
+    <ng-md-icon ng-attr-icon="{{playing ? 'pause' : 'play_arrow'}}"></ng-md-icon>
+  </md-button>
+  <md-progress-linear class="md-warn" md-mode="buffer" value="{{progress * 100}}"
+                      disabled-md-buffer-value="{{determinateValue2}}">
+  </md-progress-linear>
+  <!--<md-button class="md-icon-button slide-toggle" ng-if="playing" ng-click="stop()">
+    <ng-md-icon icon="stop"></ng-md-icon>
+  </md-button>-->
 </div>

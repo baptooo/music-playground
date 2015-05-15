@@ -3,36 +3,64 @@ function mpAudioPlayer(audioPlayerService) {
     restrict: 'E',
     templateUrl: 'scripts/audioplayer/audioplayer.tpl.html',
     scope: {
-      src: '='
+      src: '=',
+      autoplay: '='
     },
     link: function (scope, element, attrs) {
       //element.on('ended', function () {
       //  playlistService.next();
       //});
-      var audio = element.find('audio')[0];
+      var audio;
 
-      function _onPlay() {
-        $timeout(function() {
-          scope.playing = true;
-        });
+      function _onProgress() {
+        scope.progress = audio.currentTime / audio.duration;
+        scope.$apply();
       }
 
-      function _onPause() {
-        $timeout(function() {
-          scope.playing = false;
-        });
+      function _onCanPlay() {
+        scope.duration = audio.duration;
+        scope.progress = 0;
       }
 
-      audio.addEventListener('play', _onPlay);
-      audio.addEventListener('pause', _onPause);
+      function _buildAudio() {
+        if (!audio) {
+          audio = document.createElement('audio');
+          audio.autoplay = scope.autoplay;
+          audio.addEventListener('progress', _onProgress);
+          audio.addEventListener('canplay', _onCanPlay);
+        }
 
-      scope.pause = function() {
-        audio.pause();
+        audio.src = scope.src;
+        if(scope.autoplay && !scope.playing) {
+          scope.playPause();
+        }
+      }
+
+      scope.playing = scope.autoplay;
+
+      scope.playPause = function () {
+        if (scope.playing) {
+          audio.pause();
+        } else {
+          audio.play();
+        }
+
+        scope.playing = !scope.playing;
       };
 
-      scope.$on('$destroy', function() {
-        audio.removeEventListener('play', _onPlay);
-        audio.removeEventListener('pause', _onPause);
+      scope.stop = function () {
+        audio.pause();
+        audio.currentPosition = 0;
+
+        scope.playing = false;
+      };
+
+      scope.$watch('src', function () {
+        _buildAudio();
+      });
+
+      scope.$on('$destroy', function () {
+        audio.pause();
       });
     }
   }

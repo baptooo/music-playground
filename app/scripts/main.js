@@ -1,5 +1,6 @@
 var angular = require('angular'),
-  config = require('./core/config');
+  config = require('./core/config'),
+  constants = require('./core/constants');
 
 require('angular-material-icons');
 
@@ -17,5 +18,6 @@ var app = angular.module('music-playground', [
   require('./playlist'),
   require('./listen'),
   require('./audioplayer'),
+  'constants'
 ]).config(config)
   .constant('apiUrl', '/api');
