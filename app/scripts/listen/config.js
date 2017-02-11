@@ -1,7 +1,7 @@
 function config($stateProvider) {
   // Route configuration
   $stateProvider
-    .state('artists.albums.tracks.listen', {
+    .state('root.artists.albums.tracks.listen', {
       url: '/listen/:track',
       resolve: {
         currentTrack: function ($stateParams, trackService) {
@@ -11,13 +11,7 @@ function config($stateProvider) {
             });
         }
       },
-      onEnter: function (currentTrack, $rootScope) {
-        $rootScope.currentTrack = angular.extend(currentTrack, {
-          artist: $rootScope.currentArtist.name
-        });
-      },
-      controller: function ($rootScope, currentTrack, trackService) {
-        $rootScope.deepLinkTrack = true;
+      onEnter: function (currentTrack, $rootScope, trackService) {
         trackService.setCurrentTrack(currentTrack);
       }
     });

@@ -1,21 +1,35 @@
-<div class="col-md-3">
-  <div class="form-group">
-    <input type="text" ng-model="nameFilter"
-           ng-model-options="{ debounce: 350 }"
-           class="form-control"
-           placeholder="Chercher par nom"
-      />
-  </div>
-  <ul class="list-unstyled actionList">
-    <li ng-repeat="artist in artists.items | filter:nameFilter | orderBy:'name' track by $index"
-        class="clearfix actionList__item"
-      ><span class="text">{{artist.name}}</span>
-      <a href ui-sref="artists.albums({
-        artist: artist.label
-      })" type="button" class="btn btn-default btn-sm pull-right return-top">
-        Voir les albums
-      </a>
-    </li>
-  </ul>
+<md-input-container>
+  <label>Filtrer par nom</label>
+  <input type="text" ng-model="artists.nameFilter" ng-model-options="{ debounce: 350 }"/>
+</md-input-container>
+
+<md-subheader>
+  <span>
+    {{filteredArtists.length + ' artiste' + (filteredArtists.length > 1 ? 's' : '')}}
+    <span ng-if="artists.nameFilter">
+      pour {{artists.nameFilter}}
+    </span>
+  </span>
+</md-subheader>
+
+<md-list>
+  <md-item
+    ng-repeat="artist in filteredArtists = (artists.items | filter:artists.nameFilter | orderBy:'name') track by $index">
+    <md-item-content href ui-sref="root.artists.albums({artist: artist.label})"
+                     class="return-top hover-tile hover-tile--animate-left" aria-label="show albums">
+      <div class="md-tile-left">
+        <ng-md-icon icon="chevron_right"></ng-md-icon>
+      </div>
+      <div class="md-tile-content">
+        {{artist.name}}
+      </div>
+    </md-item-content>
+    <md-divider></md-divider>
+  </md-item>
+</md-list>
+
+<div class="slide-bottom" layout="column" layout-align="center center" ng-if="!filteredArtists.length">
+  <md-button class="md-fab md-warn" ng-click="artists.clearResearch()">
+    <ng-md-icon icon="replay" style="fill: #ffffff"></ng-md-icon>
+  </md-button>
 </div>
-<div ui-view class="slide-right"></div>

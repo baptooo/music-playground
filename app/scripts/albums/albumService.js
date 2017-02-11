@@ -23,10 +23,6 @@ function albumService($http, $q, apiUrl) {
     return deffer.promise;
   }
 
-  function _getGenre(album) {
-    return album.genre.join(',');
-  }
-
   function _getAlbumByName(album, artist) {
     return _getAlbumsForArtist(artist)
       .then(function (data) {
@@ -41,7 +37,6 @@ function albumService($http, $q, apiUrl) {
 
   return {
     getAlbumsForArtist: _getAlbumsForArtist,
-    getGenre: _getGenre,
     getAlbumByName: _getAlbumByName
   };
 }

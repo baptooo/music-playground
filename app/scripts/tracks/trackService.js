@@ -48,6 +48,10 @@ function trackService($http, $q, $stateParams, $rootScope, apiUrl) {
     $rootScope.trackPath = _getTrackPath(track);
     $rootScope.trackSelected = track.path;
     $rootScope.trackUri = _getTrackRoute(track);
+    $rootScope.currentTrack = angular.extend(track, {
+      artist: $rootScope.currentArtist.name
+    });
+
   }
 
   function _resetCurrentTrack() {

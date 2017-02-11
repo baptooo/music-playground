@@ -43,6 +43,10 @@ module.exports = function (grunt) {
           connect().use(
             '/api',
             connect.static('./api')
+          ),
+          connect().use(
+            '/node_modules',
+            connect.static('./node_modules')
           )
         ]);
 

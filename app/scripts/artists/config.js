@@ -1,7 +1,15 @@
 function config($stateProvider) {
-  $stateProvider.state('artists', {
+  $stateProvider.state('root.artists', {
     url: '/',
-    templateUrl: 'scripts/artists/artists.tpl.html',
+    views: {
+      'artists@': {
+        templateUrl: 'scripts/artists/artists.tpl.html',
+        controller: 'ArtistsCtrl as artists'
+      },
+      'player@': {
+        templateUrl: 'scripts/player/player.tpl.html'
+      }
+    },
     resolve: {
       artistPromise: function (artistService) {
         return artistService.getArtists()
@@ -9,8 +17,7 @@ function config($stateProvider) {
             return data;
           });
       }
-    },
-    controller: 'ArtistsCtrl as artists'
+    }
   })
 }
 
